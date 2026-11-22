@@ -4,6 +4,8 @@
   //   Deploy command: npx wrangler deploy      (Docker must be available: Workers Builds has it; on your PC start Docker Desktop)
   "name": "orderistan",
   "main": "worker.js",
+  // wrangler builds the frontend itself, so it works even if the dashboard "Build command" is empty:
+  "build": { "command": "npm run build" },
   "compatibility_date": "2025-01-01",
   "workers_dev": true,
   "assets": {

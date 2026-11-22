@@ -17,7 +17,7 @@ Do NOT set ALLOWED_ORIGINS / TRUST_PROXY (not needed here). Secrets set in the d
 If secrets were ever shared in a zip/chat, rotate them first (see MERGE_AND_AUDIT.md).
 
 ## 2. Deploy
-GitHub + Workers Builds: Root directory empty, Build `npm run build`, Deploy `npx wrangler deploy`.
+GitHub + Workers Builds: Root directory empty, Deploy command `npx wrangler deploy` (Build command can stay empty: wrangler builds the frontend itself).
 Or from your PC (Docker Desktop running): `npm install && npm run deploy`.
 First deploy takes a few minutes (image build). Check: `https://orderistan.orderistan.workers.dev/api/health`
 
