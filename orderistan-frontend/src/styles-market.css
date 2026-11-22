@@ -1,0 +1,41 @@
+/* Stores page (/stores). Doubled selectors so they win over earlier stylesheets. */
+.landing .market-hero{position:relative;overflow:hidden;border-radius:26px;margin:14px 0 18px;padding:clamp(26px,3.4vw,44px) clamp(22px,4vw,48px);min-height:190px;background:#bfe0ff url(/stores-banner.webp) right center/cover no-repeat;box-shadow:0 14px 40px rgba(10,42,115,.12)}
+.landing .market-hero::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.88) 0%,rgba(255,255,255,.6) 38%,rgba(255,255,255,0) 62%)}
+.landing .market-hero>*{position:relative}
+.landing .market-hero h1{margin:0;font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.05;letter-spacing:-.02em;color:var(--navy-deep,#06174d);font-weight:800}
+.landing .market-hero h1 em{font-style:normal;color:var(--orange)}
+.landing .market-hero p{margin:.5em 0 1.1em;font:600 clamp(1rem,1.7vw,1.3rem) var(--font-head);color:#1d2b4f;max-width:640px}
+.landing .market-hero ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px 30px}
+.landing .market-hero li{display:flex;align-items:center;gap:10px;font:700 .95rem var(--font-head);color:var(--navy)}
+.landing .market-hero li .ico{width:24px;height:24px;color:var(--navy)}
+.landing .mk-seg{margin:0 0 12px}
+.landing .toolbar{background:var(--card);border-radius:18px;padding:8px;box-shadow:0 8px 24px rgba(10,42,115,.07);border:1px solid var(--line)}
+.landing .toolbar select{border-radius:14px;font-weight:700;color:var(--navy)}
+.landing .market-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
+.landing .market-layout .sgrid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.landing .market-layout .scard{border-radius:22px;box-shadow:0 10px 30px rgba(10,42,115,.08)}
+.landing .scard-banner{position:relative}
+.landing .scard-online{position:absolute;top:10px;right:10px;z-index:3;display:inline-flex;align-items:center;gap:6px;background:#16a34a;color:#fff;border-radius:99px;padding:4px 12px;font:700 .74rem var(--font-head)}
+.landing .scard-online i{width:6px;height:6px;border-radius:50%;background:#fff}
+.landing .scard-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;padding:9px 18px;border:1.5px solid var(--orange);border-radius:99px;color:var(--navy);font:700 .86rem var(--font-head);align-self:center;transition:background .2s,color .2s}
+.landing .scard:hover .scard-btn{background:var(--orange);color:#fff}
+.landing .scard-btn .ico{width:15px;height:15px}
+.landing .mk-cta{position:sticky;top:110px;flex-direction:column;justify-content:space-between;overflow:hidden;border-radius:22px;background:linear-gradient(160deg,#fff4e6,#ffe6c7);box-shadow:0 10px 30px rgba(255,122,0,.15);position:relative}
+.landing .mk-cta h3{margin:0 0 8px;font:800 1.45rem/1.2 var(--font-head);color:var(--navy-deep,#06174d)}
+.landing .mk-cta p{color:#44506f}
+.landing .mk-cta .btn{background:var(--grad-warm);color:#fff;border-color:transparent;box-shadow:0 12px 26px rgba(255,122,0,.35)}
+.landing .mk-cta-art{position:absolute;right:-6px;bottom:8px;width:130px;opacity:.95}
+@media(max-width:1100px){.landing .market-layout{grid-template-columns:1fr}.landing .mk-cta{position:relative;top:0;min-height:0}.landing .mk-cta-art{width:110px;bottom:-4px}}
+@media(max-width:700px){
+  .landing .market-hero{background-position:70% center}
+  .landing .market-layout .sgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .landing .scard-btn{padding:7px 12px;font-size:.78rem}
+}
+.dark .landing .market-hero::before{background:linear-gradient(90deg,rgba(6,12,32,.75),rgba(6,12,32,0) 62%)}
+.dark .landing .market-hero h1,.dark .landing .market-hero p,.dark .landing .market-hero li,.dark .landing .market-hero li .ico{color:#fff}
+.dark .landing .mk-cta{background:var(--card)}.dark .landing .mk-cta h3,.dark .landing .mk-cta p{color:var(--ink)}
+
+/* Store card hover: soft blue gradient shading + wide glow */
+.landing .market-layout .scard{transition:transform .4s var(--ease),box-shadow .4s,background .4s,border-color .4s}
+.landing .market-layout .scard:hover{background:linear-gradient(180deg,#fff 30%,#e3eeff 100%);border-color:transparent;transform:translateY(-6px);box-shadow:0 30px 60px -10px rgba(37,99,235,.28),0 10px 30px rgba(37,99,235,.14)}
+.dark .landing .market-layout .scard:hover{background:linear-gradient(180deg,var(--card) 30%,#14264d 100%);box-shadow:0 30px 60px -10px rgba(59,130,246,.35),0 10px 30px rgba(59,130,246,.18)}

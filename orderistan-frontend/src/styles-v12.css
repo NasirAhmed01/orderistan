@@ -1,0 +1,273 @@
+/* styles-v12.css - imported LAST.
+   1. Main navbar on phones: one tidy row (menu | logo | CTA) + full-width search row
+   2. Laptop product pages: buy buttons are normal (not sticky); phone keeps the bottom bar
+   3. Fashion store: refined header, listing, product page (portrait gallery, clearer options, aligned buy row) */
+
+/* ================= 1. MAIN NAVBAR - PHONE ================= */
+@media(max-width:700px){
+  .mh-main{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"burger logo nav" "search search search";
+    align-items:center;column-gap:10px;row-gap:10px;padding-top:10px;padding-bottom:10px}
+  .mh-main>.mh-burger{grid-area:burger;width:40px;height:40px;min-height:0}
+  .mh-main>.logo{grid-area:logo;min-width:0;gap:7px;font-size:1.12rem;justify-self:start}
+  .mh-main>.logo img{height:30px;width:auto}
+  .mh-main>.logo div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mh-main>.mh-nav{grid-area:nav;margin-left:0;justify-self:end;gap:6px;flex-wrap:nowrap}
+  .mh-main>.mh-search{grid-area:search;order:0;flex-basis:auto;max-width:none;width:100%;min-height:44px}
+  .mh-search input{min-height:0;height:44px;padding:0 16px}
+  .mh-search button{min-width:56px}
+  .mh-nav .mh-cta{min-height:0;height:36px;padding:0 14px;font-size:.78rem;white-space:nowrap;border-radius:12px}
+  .mh-nav .umenu>button{min-height:0}
+}
+@media(max-width:380px){
+  .mh-main{column-gap:8px}
+  .mh-main>.logo{font-size:1.02rem}.mh-main>.logo img{height:26px}
+  .mh-nav .mh-cta{padding:0 11px;font-size:.74rem}
+  .xs-hide{display:none}
+}
+
+/* ================= 2. LAPTOP: NO STICKY BUY BAR ================= */
+@media(min-width:761px){
+  .storefront .fd-pd .cfg-buy,.storefront .fa-pd .cfg-buy{position:static!important;bottom:auto;padding:0;background:none;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+  .storefront .fd-pd .cfg>.banner,.storefront .fa-pd .cfg>.banner{position:static!important}
+}
+
+/* ================= 3. FASHION STORE ================= */
+/* --- header: centred brand, tidy bar on every width --- */
+.storefront.storefront .fa-bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px}
+.storefront.storefront .fa-brand{justify-self:center;text-align:center;max-width:60vw}
+.storefront.storefront .fa-brand img{height:42px;width:auto;max-width:100%;object-fit:contain}
+.storefront.storefront .fa-bar .sf-actions{justify-self:end}
+.storefront.storefront .fa-nav{justify-self:start}
+.fa-ann{padding:7px 12px;font-size:.72rem;text-align:center}
+@media(max-width:860px){
+  .storefront.storefront .fa-bar{grid-template-columns:44px minmax(0,1fr) auto;height:60px;gap:8px}
+  .storefront.storefront .fa-brand{font-size:1.2rem;max-width:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .storefront.storefront .fa-brand img{height:34px}
+  .storefront.storefront .fa-bar .sf-burger{justify-self:start}
+  .storefront.storefront .fa-nav{position:absolute;left:0;right:0;top:100%;flex-direction:column;gap:0;background:#fff;border-bottom:1px solid var(--brand-line,#eee);
+    max-height:0;overflow:hidden;padding:0;visibility:hidden;transition:max-height .3s ease}
+  .storefront.storefront .fa-nav.on{max-height:320px;visibility:visible}
+  .storefront.storefront .fa-nav a{width:100%;padding:14px 20px;border-bottom:1px solid rgba(0,0,0,.06)}
+}
+
+/* --- listing: cleaner filter chips, grid rhythm --- */
+.fa-filter{gap:8px;margin-bottom:22px}
+.fa-filter button{border-radius:99px!important;padding:8px 18px;letter-spacing:.04em;text-transform:none;font-weight:600;font-size:.85rem}
+.fa-filter button.on{background:var(--brand-strong,#111);border-color:var(--brand-strong,#111);color:#fff}
+.fa-h{margin-bottom:18px}
+.fa-h select{min-height:42px;border-radius:12px;padding:0 14px}
+.fa-grid{gap:34px 20px}
+.fa-img{border-radius:16px}
+.fa-info{padding-top:12px}
+.fa-info h3{line-height:1.3}
+.fa-info .price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-weight:700}
+.fa-info .price s{font-weight:400;font-size:.85em;color:#8a8a8a}
+.fa-tag{border-radius:0 8px 8px 0;top:14px}
+@media(max-width:700px){
+  .fa-filter{flex-wrap:nowrap;overflow-x:auto;margin-inline:-16px;padding:2px 16px 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .fa-filter::-webkit-scrollbar{display:none}
+  .fa-filter button{flex:none;white-space:nowrap}
+  .fa-grid{gap:24px 12px}
+  .fa-img{border-radius:12px}
+  .fa-h.row{align-items:center}
+}
+
+/* --- product page --- */
+.storefront.storefront .fa-pd{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start}
+/* portrait gallery: clothes are tall, landscape crops them */
+.storefront.storefront .pd-left .fa-pd .cr-track.gal-main,
+.storefront.storefront .fa-pd .pd-left .cr-track.gal-main{aspect-ratio:4/5;max-height:min(78vh,760px);border-radius:20px}
+.storefront.storefront .fa-pd .pd-left .cr-slide img{object-fit:cover;object-position:center top}
+.storefront.storefront .fa-pd .pd-left .gal-th{gap:10px;padding:4px 2px 6px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:thin}
+.storefront.storefront .fa-pd .pd-left .gal-th button{flex:none;width:72px;height:90px;border-radius:12px}
+.storefront.storefront .fa-pd .pd-left .gal-th img{object-fit:cover}
+
+/* info column as one clean panel */
+.storefront .fa-pd-info{background:#fff;border:1px solid var(--brand-line,#eee);border-radius:22px;padding:clamp(18px,2.6vw,32px);box-shadow:0 14px 34px rgba(var(--brand-strong-rgb,0,0,0),.07);min-width:0}
+.storefront.storefront .fa-pd-info h1{font-size:clamp(1.6rem,2.6vw,2.4rem);line-height:1.15;margin:4px 0 8px;overflow-wrap:anywhere}
+.storefront .fa-pd-info .pd-toprow{margin-bottom:10px}
+.storefront .fa-pd-info .rate-row{margin:0 0 10px}
+.storefront .fa-pd-info .pd-short{margin:0 0 14px;color:var(--muted);max-width:none}
+.storefront.storefront .fa-pd-info .price.lg{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:clamp(1.6rem,2.6vw,2.2rem);padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--brand-line,#eee)}
+.storefront .fa-pd-info .price.lg s{font-size:.55em;font-weight:500;color:#8a8a8a}
+
+/* options */
+.storefront .fa-pd-info .cfg{gap:20px;margin:0}
+.storefront .fa-pd-info .cfg-sec legend{display:flex;align-items:center;gap:8px;width:100%;margin-bottom:10px;font-size:.95rem}
+.storefront .fa-pd-info .cfg-sec legend small{font-weight:700;color:var(--brand-strong)}
+.storefront .fa-pd-info .cfg-sec legend .linkish{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:700;color:var(--brand-strong);text-decoration:underline;text-underline-offset:3px;background:none;border:0;cursor:pointer;padding:0}
+.storefront .fa-pd-info .size-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:10px}
+.storefront .fa-pd-info .sz{width:100%;min-width:0;height:46px;border-radius:12px;font-weight:700}
+.storefront .fa-pd-info .sz:disabled{opacity:.4;text-decoration:line-through;cursor:not-allowed;background:#f6f6f6}
+.storefront .fa-pd-info .sw-grid{gap:12px}
+.storefront .fa-pd-info .sw{width:42px;height:42px;padding:4px;border:2px solid transparent;border-radius:50%;transition:transform .15s,border-color .15s}
+.storefront .fa-pd-info .sw:hover:not(:disabled){transform:scale(1.08)}
+.storefront .fa-pd-info .sw.on{border-color:var(--brand-strong,#111)}
+.storefront .fa-pd-info .sw:disabled{opacity:.35;cursor:not-allowed}
+.storefront .fa-pd-info .avail{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:99px;background:var(--brand-soft,#f4f4f4);width:max-content;max-width:100%;font-size:.84rem}
+
+/* buy row (laptop): qty + add to cart on one line, buy now full width under it - all same height */
+@media(min-width:761px){
+  .storefront.storefront .fa-pd .cfg-buy{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:stretch;margin-top:2px}
+  .storefront.storefront .fa-pd .cfg-buy .qtyb{height:52px;align-self:stretch}
+  .storefront.storefront .fa-pd .cfg-buy .qtyb button{height:100%}
+  .storefront.storefront .fa-pd .cfg-buy .btn{height:52px;min-height:52px;padding:0 20px;font-size:.98rem;border-radius:14px;justify-content:center;white-space:nowrap}
+  .storefront.storefront .fa-pd .cfg-buy .btn.grow{overflow:hidden;text-overflow:ellipsis}
+  .storefront.storefront .fa-pd .cfg-buy .buy-now{grid-column:1/-1;width:100%}
+}
+/* perks + seller */
+.storefront .fa-pd-info .perk-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:20px}
+.storefront .fa-pd-info .perk-cards>div{flex-direction:column;align-items:center;text-align:center;gap:6px;padding:12px 8px;background:var(--brand-soft,#f7f7f7);border:0}
+.storefront .fa-pd-info .sold-by{margin-top:14px;box-shadow:none;background:var(--brand-soft,#f7f7f7);border:0}
+@media(max-width:560px){
+  .storefront .fa-pd-info .perk-cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .storefront .fa-pd-info .perk-cards small{display:none}
+  .storefront .fa-pd-info .perk-cards b{font-size:.72rem}
+}
+/* phone: tidy panel, keep bottom buy bar (already in v11) */
+@media(max-width:900px){
+  .storefront.storefront .fa-pd{grid-template-columns:minmax(0,1fr);gap:16px}
+  .storefront.storefront .pd-left .fa-pd .cr-track.gal-main,
+  .storefront.storefront .fa-pd .pd-left .cr-track.gal-main{aspect-ratio:4/5;max-height:70vh;border-radius:16px}
+  .storefront .fa-pd-info{padding:18px 16px;border-radius:18px;box-shadow:none}
+  .storefront.storefront .fa-pd .pd-left .gal-th button{width:60px;height:74px}
+}
+/* related pieces */
+.fa-detail .fa-sec{padding-top:clamp(32px,5vw,56px)}
+.fa-detail .fa-h h2{font-size:clamp(1.4rem,2.6vw,2rem)}
+
+/* ================= 4. FOOD PRODUCT PAGE - COMPACT, BUY ROW FITS THE SCREEN (laptop/desktop) ================= */
+@media(min-width:901px){
+  .storefront .fd-detail{padding-top:clamp(10px,1.6vh,20px);padding-bottom:32px}
+  .storefront .fd-detail .crumbs{margin:0 0 clamp(6px,1.2vh,12px);font-size:.8rem}
+  .storefront.storefront .fd-pd{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,2.6vw,40px);align-items:start}
+  /* gallery: height follows the screen height instead of growing with the width */
+  .storefront.storefront .fd-pd .pd-left .cr-track.gal-main{aspect-ratio:auto;height:clamp(300px,calc(100vh - 250px),520px);max-height:none;border-radius:18px}
+  .storefront.storefront .fd-pd .pd-left .gal-th button{width:64px;height:50px;border-radius:12px}
+  .storefront.storefront .fd-pd .pd-left{gap:10px}
+  /* details column: everything one step smaller and tighter */
+  .storefront .fd-pd .pd-toprow{margin-bottom:4px}
+  .storefront .fd-pd .cat-pill,.storefront .fd-pd .stock-pill{padding:4px 10px;font-size:.76rem;margin:0}
+  .storefront.storefront .fd-pd h1{font-size:clamp(1.4rem,2.1vw,2rem);margin:0 0 2px;line-height:1.1}
+  .storefront .fd-pd .rate-row{margin:2px 0 4px;font-size:.82rem}
+  .storefront .fd-pd .pd-short{font-size:.86rem;line-height:1.4;margin:0 0 6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .storefront.storefront .fd-pd .price.lg{font-size:clamp(1.4rem,2vw,1.85rem);gap:8px;margin:0 0 6px;line-height:1.15}
+  .storefront .fd-pd .price.lg s{font-size:.5em}
+  .storefront .fd-pd .off-chip{padding:3px 10px;font-size:.76rem}
+  .storefront .fd-pd .cfg{gap:10px;margin:6px 0 0}
+  .storefront .fd-pd .cfg-sec legend{font-size:.9rem;margin-bottom:6px}
+  .storefront.storefront .fd-pd .opt-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+  .storefront.storefront .fd-pd .opt{padding:8px 12px;border-radius:14px}
+  .storefront.storefront .fd-pd .opt b{font-size:.86rem}
+  .storefront.storefront .fd-pd .opt span{font-size:.74rem}
+  .storefront .fd-pd .chk{padding:6px 12px;font-size:.82rem}
+  .storefront .fd-pd .avail{font-size:.82rem}
+  /* buy row: one line - qty | add to cart | buy now, all the same height */
+  .storefront.storefront .fd-pd .cfg-buy{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;margin-top:2px;align-items:stretch}
+  .storefront.storefront .fd-pd .cfg-buy .qtyb{height:46px}
+  .storefront.storefront .fd-pd .cfg-buy .qtyb button{width:36px;height:100%}
+  .storefront.storefront .fd-pd .cfg-buy .btn{height:46px;min-height:46px;padding:0 18px;font-size:.92rem;border-radius:13px;justify-content:center;white-space:nowrap}
+  /* trust cards: slim, sit right under the buttons */
+  .storefront .fd-pd .perk-cards{margin-top:10px;gap:8px;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .storefront .fd-pd .perk-cards>div{padding:7px 10px;gap:8px}
+  .storefront .fd-pd .perk-cards .ico{width:20px;height:20px}
+  .storefront .fd-pd .perk-cards small{display:none}
+  .storefront .fd-pd .sold-by{margin-top:8px;padding:8px 12px;font-size:.82rem}
+}
+/* short laptop screens (e.g. 1366x768): squeeze a little more */
+@media(min-width:901px) and (max-height:800px){
+  .storefront.storefront .fd-pd .pd-left .cr-track.gal-main{height:clamp(260px,calc(100vh - 230px),440px)}
+  .storefront .fd-pd .pd-short{-webkit-line-clamp:1}
+  .storefront .fd-pd .perk-cards{display:none}
+}
+
+/* ================= 5. PHONE BUY BAR - clean aligned row: [- 1 +] [Add to cart] [Buy now] ================= */
+@media(max-width:760px){
+  .storefront.storefront .fd-pd .cfg-buy,.storefront.storefront .fa-pd .cfg-buy{
+    grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px))}
+  .storefront.storefront .fd-pd .cfg-buy .qtyb,.storefront.storefront .fa-pd .cfg-buy .qtyb{height:46px;align-self:center;border-radius:12px}
+  .storefront.storefront .fd-pd .cfg-buy .qtyb button,.storefront.storefront .fa-pd .cfg-buy .qtyb button{width:30px;height:100%;padding:0}
+  .storefront.storefront .fd-pd .cfg-buy .qtyb b,.storefront.storefront .fa-pd .cfg-buy .qtyb b{min-width:22px;text-align:center}
+  .storefront.storefront .fd-pd .cfg-buy .btn,.storefront.storefront .fa-pd .cfg-buy .btn{
+    height:46px;min-height:46px;padding:0 8px;font-size:.86rem;font-weight:800;line-height:1;white-space:nowrap;
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;border-radius:12px;box-sizing:border-box}
+  .storefront .fd-pd .cfg-buy .cta-price,.storefront .fa-pd .cfg-buy .cta-price{display:none}
+  .storefront.storefront .fd-pd .cfg-buy .buy-now .ico,.storefront.storefront .fa-pd .cfg-buy .buy-now .ico{display:inline-block;width:15px;height:15px}
+}
+@media(max-width:350px){
+  .storefront.storefront .fd-pd .cfg-buy .buy-now .ico,.storefront.storefront .fa-pd .cfg-buy .buy-now .ico{display:none}
+  .storefront.storefront .fd-pd .cfg-buy .btn,.storefront.storefront .fa-pd .cfg-buy .btn{font-size:.8rem}
+}
+
+/* Add-to-cart label colour: the global ".brand span{color:accent}" rule was turning the label green-on-green */
+.btn.brand .cta-txt,.btn.brand .cta-price,.btn.brand .cta-price s,.btn.brand span{color:inherit!important}
+.btn.brand .cta-price s{opacity:.7}
+
+/* ================= 6. CHAT - WhatsApp-style ================= */
+.chat{background:var(--card)}
+.chat-head{padding:10px 16px;gap:12px;box-shadow:0 1px 0 var(--line);z-index:3}
+.chat-head b{font-size:1rem;line-height:1.2}
+.chat-head small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-head .grow{min-width:0}
+.chat-body{position:relative;flex:1;min-height:0;display:flex}
+.chat-body>.chat-list{flex:1;min-width:0}
+.chat-list{padding:10px 12px 10px;gap:0;scroll-behavior:auto;
+  background-color:color-mix(in srgb,var(--soft) 88%,var(--accent) 4%);
+  background-image:radial-gradient(color-mix(in srgb,var(--muted) 14%,transparent) 1px,transparent 1px);background-size:20px 20px}
+.c-day{display:flex;flex-direction:column}
+.c-sep{position:sticky;top:6px;z-index:2;display:flex;justify-content:center;margin:8px 0 8px;pointer-events:none}
+.c-sep span{background:color-mix(in srgb,var(--card) 94%,transparent);border:0;box-shadow:0 1px 2px rgba(16,24,40,.12);color:var(--muted);font-size:.72rem;font-weight:700;letter-spacing:.02em;padding:4px 12px;border-radius:10px;backdrop-filter:blur(6px)}
+.c-start{align-self:center;display:flex;align-items:center;gap:6px;max-width:92%;text-align:center;margin:6px 0 4px;padding:6px 12px;border-radius:10px;font-size:.72rem;line-height:1.35;color:var(--muted);background:color-mix(in srgb,var(--sun,#f5c84c) 22%,var(--card))}
+.c-start .ico{width:13px;height:13px;flex:none}
+.c-older{align-self:center;display:flex;align-items:center;gap:8px;margin:2px 0 6px;font-size:.74rem;color:var(--muted);min-height:26px}
+.c-older .spinner,.c-older .ico{width:16px;height:16px}
+.c-unread{display:flex;justify-content:center;margin:10px -12px 8px;padding:4px 0;background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.c-unread span{font-size:.72rem;font-weight:700;color:var(--accent)}
+
+/* bubbles: tails, time + ticks inline with the text, tight runs from the same sender */
+.c-row{margin-top:8px}.c-row.cont{margin-top:2px}.c-day .c-sep+.c-row{margin-top:0}
+.c-bubble{display:flow-root;position:relative;max-width:min(80%,540px);padding:6px 9px 6px 11px;border-radius:12px;box-shadow:0 1px 1px rgba(16,24,40,.1);font-size:.93rem;line-height:1.38}
+.theirs .c-bubble{border:0;background:var(--card);border-top-left-radius:12px}
+.mine .c-bubble{border:0;background:color-mix(in srgb,var(--accent) 20%,var(--card));border-top-right-radius:12px}
+.theirs.first .c-bubble{border-top-left-radius:2px}.mine.first .c-bubble{border-top-right-radius:2px}
+.theirs.first .c-bubble::before,.mine.first .c-bubble::before{content:"";position:absolute;top:0;width:9px;height:12px}
+.theirs.first .c-bubble::before{left:-8px;background:var(--card);clip-path:polygon(100% 0,0 0,100% 100%)}
+.mine.first .c-bubble::before{right:-8px;background:color-mix(in srgb,var(--accent) 20%,var(--card));clip-path:polygon(0 0,100% 0,0 100%)}
+.ct{display:inline;white-space:pre-wrap;overflow-wrap:anywhere}
+.c-meta{float:right;display:inline-flex;align-items:center;gap:3px;margin:8px 0 -3px 12px;font-size:.66rem;line-height:1;color:var(--muted);user-select:none}
+.c-bubble.has-img{padding:4px 4px 6px}
+.c-bubble.has-img .ct{display:block;padding:4px 7px 0}
+.c-bubble.has-img .c-meta{margin:2px 6px -2px 12px}
+.c-img{margin-bottom:0;border-radius:9px}
+.c-img img{max-width:min(280px,100%);max-height:340px}
+.c-img.wait{background:linear-gradient(100deg,var(--soft) 30%,color-mix(in srgb,var(--card) 70%,var(--soft)) 50%,var(--soft) 70%) 0 0/200% 100%;animation:cshim 1.3s linear infinite}
+@keyframes cshim{to{background-position:-200% 0}}
+.c-retry{margin-top:3px}
+
+/* loading skeleton (instead of a lone spinner) */
+.c-skel{display:flex;flex-direction:column;gap:10px;padding:14px 4px}
+.c-skel i{display:block;height:38px;border-radius:12px;background:linear-gradient(100deg,var(--card) 30%,color-mix(in srgb,var(--card) 60%,var(--soft)) 50%,var(--card) 70%) 0 0/200% 100%;animation:cshim 1.3s linear infinite;opacity:.9}
+.c-skel i.l{align-self:flex-start}.c-skel i.r{align-self:flex-end}
+
+/* jump-to-latest button */
+.c-down{position:absolute;right:14px;bottom:12px;z-index:4;width:42px;height:42px;border-radius:50%;border:0;background:var(--card);color:var(--muted);display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 12px rgba(16,24,40,.22);transition:transform .15s}
+.c-down:hover{transform:translateY(-2px)}.c-down .ico{width:22px;height:22px}
+.c-down em{position:absolute;top:-8px;left:50%;transform:translateX(-50%);min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--accent);color:#fff;font:700 .7rem/20px var(--font);font-style:normal;text-align:center}
+
+/* composer: one rounded field with the paperclip inside + round send button */
+.c-quick{padding:8px 12px 2px;background:var(--card)}
+.c-compose{align-items:flex-end;gap:10px;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));background:var(--card);border-top:1px solid var(--line)}
+.c-field{flex:1;min-width:0;display:flex;align-items:flex-end;background:var(--soft);border:1.5px solid transparent;border-radius:24px;padding:0 6px 0 2px;transition:border-color .2s,background .2s}
+.c-field:focus-within{border-color:var(--accent);background:var(--card)}
+.c-field .attach{flex:none;width:40px;height:44px;display:grid;place-items:center;color:var(--muted);cursor:pointer;border-radius:50%}
+.c-field .attach:hover{color:var(--accent)}
+.c-field textarea{flex:1;min-width:0;min-height:0;height:auto;border:0;background:transparent;box-shadow:none!important;border-radius:0;padding:12px 6px;font-size:.95rem;line-height:1.35;max-height:120px;resize:none;outline:0}
+.c-compose .send{width:46px;height:46px;transition:transform .15s,opacity .2s}
+.c-compose .send:not(:disabled):hover{transform:scale(1.06)}
+.c-compose .send:disabled{background:var(--muted);opacity:.4}
+
+@media(max-width:860px){
+  .c-bubble{max-width:84%}
+  .chat-head{padding:9px 12px}
+}
+@media(prefers-reduced-motion:reduce){.c-img.wait,.c-skel i{animation:none}}

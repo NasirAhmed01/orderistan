@@ -1,0 +1,34 @@
+{
+  // Orderistan on Cloudflare: frontend + backend in ONE Worker (needs Workers Paid plan because of Containers).
+  //   Build command : npm run build
+  //   Deploy command: npx wrangler deploy      (Docker must be available: Workers Builds has it; on your PC start Docker Desktop)
+  "name": "orderistan",
+  "main": "worker.js",
+  "compatibility_date": "2025-01-01",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./orderistan-frontend/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "containers": [
+    {
+      "class_name": "Backend",
+      "image": "./orderistan-backend/Dockerfile",
+      "image_build_context": "./orderistan-backend",
+      "instance_type": "standard-1",
+      "max_instances": 1
+    }
+  ],
+  "durable_objects": { "bindings": [{ "name": "BACKEND", "class_name": "Backend" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Backend"] }],
+  "triggers": { "crons": ["0 3 * * *"] },
+  // Custom domain (after orderistan.site is on this Cloudflare account) - uncomment, deploy again:
+  // "routes": [
+  //   { "pattern": "orderistan.site", "custom_domain": true },
+  //   { "pattern": "www.orderistan.site", "custom_domain": true },
+  //   { "pattern": "*.orderistan.site/*", "zone_name": "orderistan.site" }   // seller stores (+ proxied wildcard DNS record "*")
+  // ],
+  "observability": { "enabled": true }
+}

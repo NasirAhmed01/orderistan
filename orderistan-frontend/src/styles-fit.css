@@ -1,0 +1,127 @@
+/* styles-fit.css - size tuning so the UI matches the 4 reference designs
+   (landing desktop, landing mobile, food product page, fashion product page).
+   Imported LAST in main.jsx so it overrides earlier sheets. Only sizes/spacing here - no colour changes. */
+
+/* ============ MARKETPLACE HEADER (landing) ============ */
+.mh-top .container{padding-top:5px;padding-bottom:5px}
+.mh-top{font-size:.78rem}
+.mh-main{padding-top:9px;padding-bottom:9px;gap:18px}
+.mh-search input{padding:9px 16px;font-size:.88rem}
+.mh-nav>a:not(.btn){font-size:.86rem;padding:6px 10px}
+
+/* ============ LANDING HERO - DESKTOP ============ */
+.landing .hero.hero-photo{min-height:clamp(420px,34vw,520px)}
+.landing .hero.hero-photo .hero-wrap{grid-template-columns:minmax(0,min(46vw,560px)) 1fr;padding-top:28px;padding-bottom:28px}
+.landing .hero-photo .hero-pill{font-size:.78rem;padding:7px 13px;border-radius:12px;margin-bottom:14px}
+.landing .hero-photo .hero-pill .ico{width:15px;height:15px}
+.landing .hero-photo h1{font-size:clamp(1.9rem,3.2vw,3.05rem);line-height:1.08;margin:0 0 .35em}
+.landing .hero-photo p{font-size:.92rem;line-height:1.5;max-width:470px;margin:0 0 18px}
+.landing .hero-photo .btn.lg{padding:10px 20px;font-size:.9rem;border-radius:12px}
+.landing .hero-photo .hero-trust{margin-top:20px}
+.landing .hero-photo .hero-trust li{padding:0 14px;font-size:.78rem;gap:8px}
+.landing .hero-photo .hero-trust .ico{width:20px;height:20px}
+.landing .hero-photo .float{padding:9px 14px;border-radius:14px;gap:10px}
+.landing .hero-photo .float b{font-size:.82rem}
+.landing .hero-photo .float small{font-size:.7rem}
+.landing .strip-bar .strip{padding-top:12px;padding-bottom:12px}
+
+/* section rhythm further down the landing page */
+.landing .section{padding-top:clamp(28px,4vw,48px);padding-bottom:clamp(28px,4vw,48px)}
+.landing .section-h h2{font-size:clamp(1.3rem,2.2vw,1.8rem)}
+
+/* ============ LANDING HERO - MOBILE (<=700px, reference ~390px wide) ============ */
+@media(max-width:700px){
+  .mh-top{font-size:.72rem}
+  .mh-main{gap:10px}
+  .landing .hero-photo .hero-pill{font-size:.72rem;padding:6px 11px;margin-bottom:11px}
+  .landing .hero-photo h1{line-height:1.1}
+  .landing .hero-photo p{font-size:.8rem;line-height:1.45;margin-bottom:14px}
+  .landing .hero-photo .btn.lg{padding:10px 14px;font-size:.8rem;gap:6px}
+  .landing .m-trust{border-radius:18px}
+  .landing .m-cities{padding:9px 6px;border-radius:16px}
+  .landing .m-cities a{font-size:.74rem;padding:3px 9px;gap:5px}
+  .landing .m-cities .ico{width:15px;height:15px}
+}
+
+/* ============ STOREFRONT PRODUCT PAGES (food + fashion) ============ */
+/* header: slimmer */
+.storefront.storefront .container{max-width:1400px}
+.storefront.storefront .fa-bar{height:64px;gap:22px}
+.storefront.storefront .fa-nav{gap:24px}
+.storefront.storefront .fa-nav a{font-size:.9rem}
+.storefront .sf-actions{gap:10px}
+.storefront .sf-actions .icon-btn .ico{width:20px;height:20px}
+.storefront .sf-actions .btn.brand.sm{padding:8px 16px;font-size:.85rem}
+.sf-ann{font-size:.78rem}.sf-ann .container{padding-top:5px;padding-bottom:5px}
+
+/* two-column layout: gallery a little narrower than details, like the mockups */
+.storefront.storefront .fd-pd,.storefront.storefront .fa-pd{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,3vw,44px)}
+
+/* gallery: shorter hero image (food 16:10, fashion 4:3), smaller thumbs */
+.storefront.storefront .pd-left{gap:14px}
+.storefront.storefront .pd-left .cr-track.gal-main{aspect-ratio:16/10;border-radius:20px}
+.storefront .cr-wrap{border-radius:20px}
+.storefront.storefront .pd-left .gal-th{gap:10px}
+.storefront.storefront .pd-left .gal-th button{width:clamp(60px,7.4vw,115px);height:clamp(50px,6vw,92px);border-radius:14px}
+.storefront .pd-badge{top:12px;left:12px;padding:7px 14px;font-size:.8rem}
+.storefront .pd-ov .heart{width:40px;height:40px;right:12px;bottom:12px;font-size:1.15rem}
+
+/* details column: title / price / options */
+.storefront .cat-pill{padding:6px 12px;font-size:.8rem;margin-bottom:6px}
+.storefront .stock-pill{padding:5px 12px;font-size:.8rem}
+.storefront .fa-pd-info h1,.storefront .fd-pd h1,.storefront.storefront .fa-pd-info h1,.storefront.storefront .fd-pd h1{font-size:clamp(1.7rem,3vw,2.8rem);margin:0 0 6px}
+.storefront .pd-short{font-size:.9rem;line-height:1.5;max-width:520px;margin:.1em 0 8px}
+.storefront .rate-row{font-size:.88rem;margin:4px 0 8px}
+.storefront.storefront .price.lg{font-size:clamp(1.7rem,2.9vw,2.7rem)}
+.off-chip{padding:5px 12px;font-size:.82rem}
+.storefront .cfg-sec legend{font-size:.95rem}
+.storefront .sz{min-width:44px;height:40px;font-size:.85rem}
+.storefront.storefront .opt-grid{grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px}
+.storefront.storefront .opt{padding:10px 12px}
+.storefront.storefront .opt b{font-size:.9rem}
+.storefront.storefront .opt span{font-size:.78rem}
+.storefront .chk{font-size:.85rem;padding:7px 14px}
+.storefront.storefront .cfg-buy{gap:10px;margin-top:4px}
+.storefront.storefront .cfg-buy .btn{padding:12px 18px;font-size:.95rem;min-height:0}
+.storefront .qtyb{border-radius:12px}
+
+/* perks + sold-by + tabs */
+.perk-cards{gap:8px;margin-top:14px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.perk-cards>div{padding:9px 12px;border-radius:14px;gap:10px}
+.perk-cards .ico{width:22px;height:22px}
+.perk-cards b{font-size:.82rem}.perk-cards small{font-size:.72rem}
+.sold-by{padding:9px 14px;font-size:.85rem;margin-top:10px}
+.sold-logo{width:32px;height:32px}
+.storefront .pd-tabbar button{padding:9px 18px;font-size:.9rem}
+.storefront .pd-desc,.storefront .pd-reviews{padding:14px 18px;font-size:.9rem}
+
+/* tablet */
+@media(max-width:900px){
+  .storefront.storefront .fa-bar{height:58px}
+}
+/* phone */
+@media(max-width:560px){
+  .storefront.storefront .fd-pd h1,.storefront.storefront .fa-pd-info h1{font-size:1.6rem}
+  .storefront.storefront .price.lg{font-size:1.6rem}
+  .storefront.storefront .pd-left .gal-th button{width:58px;height:48px;border-radius:12px}
+  .storefront .pd-tabbar button{padding:8px 12px;font-size:.82rem}
+}
+
+/* ============ FIX: floating hero cards must not stretch / cover the trust row ============ */
+.landing .hero-photo .float{left:auto;width:max-content;max-width:300px}
+.landing .hero-photo .float.a{left:46%;right:auto;top:8%}
+.landing .hero-photo .float.b{right:1.5%;left:auto;top:36%}
+.landing .hero-photo .float.c{right:1.5%;left:auto;bottom:9%}
+@media(max-width:1280px){.landing .hero-photo .float.c{display:none}}
+
+/* ============ FIX: hero photo crop + trust row (desktop) ============ */
+/* hero.webp is 1908x824 (ratio 2.315). Make the hero box the same ratio so cover never crops the girl. */
+@media(min-width:701px){
+  .landing .hero.hero-photo{min-height:clamp(460px,43.2vw,820px);background-position:right top;background-size:cover}
+  .landing .hero-photo .hero-trust{flex-wrap:nowrap;width:max-content;max-width:52vw;gap:0}
+  .landing .hero-photo .hero-trust li{max-width:none;white-space:nowrap;padding:0 14px}
+}
+@media(min-width:701px) and (max-width:1100px){
+  .landing .hero-photo .hero-trust{flex-wrap:wrap;width:auto;gap:10px 0}
+  .landing .hero-photo .hero-trust li{white-space:normal;max-width:150px}
+}

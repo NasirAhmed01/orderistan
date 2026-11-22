@@ -1,0 +1,319 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&display=swap");
+
+/* Clothing storefront. EVERY colour comes from the seller's theme colour (palette.js -> --brand-* variables) and flips in dark mode.
+   Rules that keep text readable for any colour (white, black, pastel...):
+   - text sits on --nz-bg / --nz-paper / --nz-chip and is --nz-ink  (always dark on light surfaces, light on dark ones)
+   - white text only sits on --nz-fill / --nz-sec / --nz-deep (palette.js guarantees >= 4.5:1 contrast with white) */
+.storefront.sf-clothing {
+  --nz-bg: var(--brand-tint); --nz-sand: color-mix(in srgb, var(--brand-soft) 55%, #fff); --nz-paper: color-mix(in srgb, var(--brand-tint) 35%, #fff);
+  --nz-chip: var(--brand-soft); --nz-chip2: var(--brand-line); --nz-line: var(--brand-line); --nz-ph: var(--brand-soft);
+  --nz-ink: var(--brand-ink); --nz-muted: color-mix(in srgb, var(--brand-ink) 66%, #fff);
+  --nz-deep: var(--brand-ink); --nz-fill: var(--brand-strong); --nz-sec: var(--brand-sec);
+  --nz-accent: var(--brand-strong); --nz-glow: var(--brand-light);
+  --nz-btn: var(--brand-ink); --nz-btn-fg: #fff; --nz-btn-hover: var(--brand-strong); --nz-btn-hover-fg: #fff;
+  --nz-head: "Outfit", "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+  background: var(--nz-bg); color: var(--nz-ink);
+}
+.dark .storefront.sf-clothing {
+  --nz-bg: var(--bg); --nz-sand: var(--card); --nz-paper: var(--card); --nz-chip: var(--soft); --nz-chip2: var(--line-2); --nz-line: var(--line); --nz-ph: var(--soft);
+  --nz-ink: var(--ink); --nz-muted: var(--muted);
+  --nz-deep: color-mix(in srgb, var(--brand-deep) 70%, #000); --nz-accent: var(--brand-light);
+  --nz-btn: var(--brand-light); --nz-btn-fg: #0b0e17; --nz-btn-hover: #fff; --nz-btn-hover-fg: #0b0e17;
+}
+.storefront.sf-clothing .sf-bd { display: none; }
+.storefront.sf-clothing :is(h1, h2, h3) { font-family: var(--nz-head); letter-spacing: -.01em; }
+.storefront.sf-clothing .btn.brand { background: var(--nz-btn); border-color: var(--nz-btn); color: var(--nz-btn-fg); border-radius: 3px; box-shadow: none; letter-spacing: 0; text-transform: none; }
+.storefront.sf-clothing .btn.brand:hover { background: var(--nz-btn-hover); border-color: var(--nz-btn-hover); color: var(--nz-btn-hover-fg); box-shadow: none; transform: none; }
+.nz-head :is(a, button, input):focus-visible, .nz-hero :is(a, button):focus-visible, .nz-sec :is(a, button, select):focus-visible, .nz-perks :is(a, button):focus-visible {
+  outline: 2px solid var(--nz-accent); outline-offset: 2px;
+}
+
+/* ---------- info bar + header ---------- */
+.nz-head { position: sticky; top: -38px; z-index: 40; background: var(--nz-bg); }
+.nz-ann { height: 38px; background: var(--nz-deep); color: #fff; font-size: .86rem; }
+.nz-ann .container { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; white-space: nowrap; overflow: hidden; }
+.nz-ann span, .nz-ann a { display: inline-flex; align-items: center; gap: 8px; color: #fff; text-decoration: none; min-width: 0; }
+.nz-ann .ico { width: 18px; height: 18px; flex: none; }
+.nz-ann b { color: var(--nz-glow); font-weight: 700; }
+.nz-ann-r > * + * { border-left: 1px solid rgba(255, 255, 255, .28); margin-left: 18px; padding-left: 18px; }
+.nz-bar { position: relative; background: var(--nz-bg); border-bottom: 1px solid var(--nz-line); }
+.nz-bar-in { height: 76px; display: flex; align-items: center; gap: clamp(12px, 2vw, 28px); }
+.nz-brand { display: flex; align-items: center; gap: 10px; min-width: 0; color: var(--nz-ink); text-decoration: none; font: 800 clamp(1.5rem, 2.4vw, 2rem)/1 var(--nz-head); letter-spacing: -.02em; }
+.nz-brand img { height: 44px; width: auto; max-width: 96px; object-fit: contain; flex: none; }
+.nz-brand span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 210px; }
+.nz-bag { width: 34px; height: 38px; flex: none; }
+.nz-nav { display: flex; gap: clamp(18px, 2.4vw, 40px); margin-left: clamp(0px, 1.2vw, 20px); }
+.nz-nav a, .nz-menu a { position: relative; color: var(--nz-ink); text-decoration: none; font-weight: 600; font-size: 1rem; }
+.nz-nav a { padding: 8px 0; }
+.nz-nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--nz-accent); transform: scaleX(0); transform-origin: left; transition: transform .25s; }
+.nz-nav a:hover::after, .nz-nav a.active::after { transform: scaleX(1); }
+.nz-search { margin-left: auto; flex: 0 1 290px; min-width: 0; display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 16px; border-radius: 999px; background: var(--nz-chip); color: var(--nz-muted); }
+.nz-search:focus-within { outline: 2px solid var(--nz-accent); outline-offset: 1px; }
+.nz-search .ico { width: 20px; height: 20px; flex: none; }
+.nz-search input, .nz-searchm input { flex: 1; min-width: 0; height: 100%; border: 0 !important; background: none !important; box-shadow: none !important; padding: 0 !important; outline: none; font: inherit; font-size: .95rem; color: var(--nz-ink); }
+.nz-actions { display: flex; align-items: center; gap: 6px; }
+.nz-actions .sf-actions { gap: 4px; }
+.nz-head .icon-btn { position: relative; width: 42px; height: 42px; display: inline-grid; place-items: center; color: var(--nz-ink); background: none; border: 0; box-shadow: none; }
+.nz-head .icon-btn .ico { width: 24px; height: 24px; }
+.nz-head .icon-btn .count { position: absolute; top: 1px; right: -1px; min-width: 19px; height: 19px; padding: 0 5px; display: grid; place-items: center; border-radius: 999px; background: var(--nz-fill); color: #fff; font-size: .68rem; font-weight: 800; box-shadow: 0 0 0 2px var(--nz-bg); }
+.nz-head .sf-actions .btn.brand.sm { background: var(--nz-btn); color: var(--nz-btn-fg); border-radius: 3px; padding: 12px 22px; font-weight: 700; font-size: .95rem; }
+.nz-head .sf-actions .btn.ghost.sm { border: 0; background: none; box-shadow: none; color: var(--nz-ink); font-weight: 600; }
+.nz-find, .nz-burger, .nz-searchm, .nz-menu { display: none; }
+.nz-head .nz-find { background: var(--nz-chip); border-radius: 50%; }
+.nz-search input::placeholder, .nz-searchm input::placeholder { color: var(--nz-muted); opacity: 1; }
+.nz-searchm, .nz-menu { position: absolute; left: 0; right: 0; top: 100%; z-index: 3; background: var(--nz-bg); border-bottom: 1px solid var(--nz-line); box-shadow: 0 18px 30px rgba(19, 34, 47, .12); }
+.nz-searchm .container { display: flex; gap: 8px; padding-block: 10px; }
+.nz-searchm input { height: 44px; padding: 0 16px !important; border-radius: 999px; background: var(--nz-chip) !important; }
+.nz-go { border: 0; background: var(--nz-btn); color: var(--nz-btn-fg); font-weight: 700; padding: 0 20px; border-radius: 999px; cursor: pointer; }
+.nz-menu .container { display: grid; padding-block: 6px 12px; }
+.nz-menu a { padding: 14px 4px; border-bottom: 1px solid var(--nz-line); }
+.nz-menu a.active { color: var(--nz-accent); }
+.nz-menu-auth { display: flex; gap: 10px; padding-top: 14px; }
+.nz-menu-auth .nz-btn { flex: 1; justify-content: center; }
+
+/* ---------- buttons ---------- */
+.nz-btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; background: var(--nz-btn); color: var(--nz-btn-fg); border: 1.5px solid var(--nz-btn); border-radius: 2px; font: 600 1.02rem var(--nz-head); text-decoration: none; cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+.nz-btn:hover { background: var(--nz-btn-hover); border-color: var(--nz-btn-hover); color: var(--nz-btn-hover-fg); }
+.nz-btn .ico { width: 20px; height: 20px; }
+.nz-btn.ghost { background: transparent; color: var(--nz-ink); border-color: var(--nz-ink); }
+.nz-btn.ghost:hover { background: var(--nz-ink); border-color: var(--nz-ink); color: #fff; }
+
+/* ---------- hero ---------- */
+.nz-hero { background: color-mix(in srgb, var(--nz-sand) 78%, transparent); border-bottom: 1px solid var(--nz-line); }
+.nz-hero-in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(10px, 3vw, 44px); align-items: center; padding-block: clamp(14px, 2.4vw, 32px); }
+.nz-copy { min-width: 0; position: relative; }
+.nz-eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 clamp(8px, 2vw, 22px); font: 600 clamp(.58rem, 1.3vw, .85rem) var(--nz-head); letter-spacing: .24em; text-transform: uppercase; color: var(--nz-ink); }
+.nz-eyebrow::after { content: ""; flex: 1; max-width: 120px; height: 1px; background: var(--nz-chip2); }
+.nz-copy h1 { margin: 0; font: 800 clamp(1.6rem, 6.6vw, 5rem)/.94 var(--nz-head); letter-spacing: -.02em; text-transform: uppercase; color: var(--nz-ink); }
+.nz-copy h1 span, .nz-copy h1 em { display: block; font-style: normal; }
+.nz-copy h1 em { color: var(--nz-accent); }
+.nz-lede { margin: clamp(10px, 2vw, 24px) 0 0; max-width: 34ch; font-size: clamp(.78rem, 1.5vw, 1.1rem); line-height: 1.5; color: var(--nz-muted); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.nz-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: clamp(14px, 3vw, 34px); }
+.nz-pager { display: flex; gap: 10px; margin-top: clamp(14px, 3vw, 30px); }
+.nz-pager button { position: relative; width: 10px; height: 10px; padding: 0; border: 0; border-radius: 50%; background: var(--nz-chip2); cursor: pointer; transition: background .2s, transform .2s; }
+.nz-pager button::before { content: ""; position: absolute; inset: -10px -4px; }
+.nz-pager button.on { background: var(--nz-fill); transform: scale(1.25); }
+
+.nz-mosaic { container-type: inline-size; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: repeat(12, minmax(0, 1fr)); gap: 6px; height: clamp(300px, 40vw, 560px); min-width: 0; }
+.nz-m { position: relative; display: block; min-width: 0; min-height: 0; overflow: hidden; }
+.nz-m-photo { grid-area: 1 / 1 / 9 / 8; background: var(--nz-ph); }
+.nz-m-deal { grid-area: 1 / 8 / 7 / 13; background: var(--nz-sec); color: #fff; display: flex; flex-direction: column; justify-content: center; padding: 0 8%; }
+.nz-m-photo2 { grid-area: 7 / 8 / 13 / 13; background: var(--nz-ph); }
+.nz-m-olive { grid-area: 9 / 6 / 13 / 8; background: var(--nz-sec); }
+.nz-m-orange { grid-area: 10 / 1 / 13 / 4; background: var(--nz-fill); }
+.nz-m-rule { grid-area: 11 / 4 / 12 / 6; align-self: center; height: 0; border-top: 1.5px solid var(--nz-chip2); overflow: visible; }
+.nz-m img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.nz-m.none { display: grid; place-items: center; color: var(--nz-muted); }
+.nz-m.none .ico { width: 34%; height: 34%; }
+.nz-m.fade img { animation: nzfade .7s ease both; }
+@keyframes nzfade { from { opacity: 0; transform: scale(1.03); } to { opacity: 1; transform: none; } }
+.nz-mosaic.sk .none { background: linear-gradient(100deg, var(--nz-chip) 30%, var(--nz-paper) 50%, var(--nz-chip) 70%) 0 0 / 200% 100%; animation: shimmer 1.3s linear infinite; }
+.nz-m-deal small { font: 600 clamp(.6rem, 3cqw, .9rem) var(--nz-head); letter-spacing: .2em; text-transform: uppercase; opacity: .95; }
+.nz-m-deal strong { display: block; margin: .06em 0; font: 800 2rem/1 var(--nz-head); font-size: clamp(1.6rem, 14cqw, 5rem); letter-spacing: -.03em; }
+.nz-m-deal strong sup { font-size: .5em; vertical-align: baseline; margin-left: .06em; letter-spacing: 0; }
+.nz-m-deal strong.w { font-size: clamp(1.5rem, 12cqw, 4.2rem); }
+.nz-m-deal hr { width: 58%; margin: clamp(6px, 2cqw, 16px) 0 0; border: 0; border-top: 1.5px solid rgba(255, 255, 255, .7); }
+.nz-cap { position: absolute; left: 10px; bottom: 10px; max-width: calc(100% - 20px); display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: color-mix(in srgb, var(--nz-paper) 94%, transparent); color: var(--nz-ink); font-size: .9rem; }
+.nz-cap > span { display: grid; min-width: 0; font-weight: 700; }
+.nz-cap b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; font-size: .82rem; }
+.nz-cap s { margin-left: 6px; color: var(--nz-muted); font-weight: 500; font-size: .78rem; }
+.nz-cap i, .nz-m-photo2 i { font-style: normal; background: var(--nz-fill); color: #fff; font-weight: 800; font-size: .74rem; padding: 4px 8px; flex: none; }
+.nz-m-photo2 i { position: absolute; right: 8px; top: 8px; }
+@container (max-width: 330px) { .nz-cap b { display: none; } .nz-cap { left: 6px; bottom: 6px; padding: 5px 7px; gap: 6px; font-size: .74rem; } .nz-cap s { display: none; } .nz-cap i { font-size: .66rem; padding: 3px 5px; } .nz-m-photo2 i { display: none; } }
+
+/* ---------- perks strip ---------- */
+.nz-perks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) auto; background: var(--nz-paper); border: 1px solid var(--nz-line); border-top: 0; }
+.nz-perks > :is(div, a) { position: relative; display: flex; align-items: center; justify-content: center; gap: 14px; padding: 20px 12px; color: var(--nz-ink); text-decoration: none; min-width: 0; }
+.nz-perks > :is(div, a) + :is(div, a)::before { content: ""; position: absolute; left: 0; top: 50%; height: 46px; transform: translateY(-50%); width: 1px; background: var(--nz-chip2); }
+.nz-perks .ico { width: 38px; height: 38px; flex: none; stroke-width: 1.5; }
+.nz-perks span { display: grid; font-size: .98rem; line-height: 1.3; }
+.nz-perks b { font-weight: 600; }
+.nz-perks small { font-size: .84rem; color: var(--nz-muted); }
+.nz-perks-go { width: 78px; border: 0; background: var(--nz-sec); color: #fff; display: grid; place-items: center; cursor: pointer; transition: background .2s; }
+.nz-perks-go:hover { background: var(--nz-deep); }
+.nz-perks-go .ico { width: 30px; height: 30px; }
+
+/* ---------- section headings ---------- */
+.nz-sec { padding-top: clamp(34px, 5vw, 60px); }
+.nz-h { position: relative; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 16px; padding-top: 16px; margin-bottom: 18px; }
+.nz-h::before { content: ""; position: absolute; top: 0; left: 0; width: 90px; height: 4px; background: var(--nz-accent); }
+.nz-h h2 { margin: 0; font: 800 clamp(1.6rem, 3.6vw, 2.5rem)/1.1 var(--nz-head); letter-spacing: -.02em; color: var(--nz-ink); }
+.nz-h h2 small { font: 600 .42em var(--nz-head); color: var(--nz-muted); margin-left: 6px; letter-spacing: 0; }
+.nz-tools { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.nz-tools select { border: 1px solid var(--nz-line); background: var(--nz-paper); color: var(--nz-ink); border-radius: 3px; padding: 9px 12px; font-size: .9rem; }
+.nz-link { display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; padding: 4px 0; color: var(--nz-accent); font: 700 1rem var(--nz-head); cursor: pointer; text-decoration: none; }
+.nz-link .ico { width: 20px; height: 20px; }
+.nz-q { margin: 0 0 12px; color: var(--nz-muted); }
+
+/* ---------- categories: a random product photo of each category ---------- */
+.nz-cats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.nz-cat { display: flex; align-items: stretch; height: clamp(96px, 11vw, 132px); padding: 0; border: 0; background: var(--nz-chip); color: var(--nz-ink); text-align: left; cursor: pointer; overflow: hidden; transition: background .2s; }
+.nz-cat:hover { background: var(--nz-chip2); }
+.nz-cat.on { outline: 2px solid var(--nz-accent); outline-offset: -2px; }
+.nz-cat-img { flex: 0 0 52%; display: grid; place-items: center; overflow: hidden; background: var(--nz-ph); color: var(--nz-muted); }
+.nz-cat-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s; }
+.nz-cat:hover .nz-cat-img img { transform: scale(1.05); }
+.nz-cat-img .ico { width: 36px; height: 36px; }
+.nz-cat-name { flex: 1; min-width: 0; align-self: center; padding: 0 4px 0 12px; font-weight: 600; font-size: .95rem; overflow-wrap: anywhere; line-height: 1.25; }
+.nz-cat > .ico { align-self: center; width: 20px; height: 20px; margin-right: 12px; flex: none; }
+
+/* ---------- filters + product grid ---------- */
+.nz-filter { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 14px; scrollbar-width: none; }
+.nz-filter::-webkit-scrollbar { display: none; }
+.nz-filter button { flex: none; padding: 8px 16px; border: 1px solid var(--nz-line); border-radius: 999px; background: var(--nz-paper); color: var(--nz-ink); font-weight: 600; font-size: .88rem; cursor: pointer; transition: background .2s, color .2s; }
+.nz-filter button:hover { border-color: var(--nz-ink); }
+.nz-filter button.on { background: var(--nz-ink); border-color: var(--nz-ink); color: #fff; }
+.nz-grid, .storefront.sf-clothing .fa-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px 18px; }
+.nz-card { position: relative; min-width: 0; }
+.nz-img { position: relative; display: block; aspect-ratio: 3 / 4; overflow: hidden; background: var(--nz-ph); color: var(--nz-muted); }
+.nz-img > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .5s, transform .9s; }
+.nz-img > img.alt { opacity: 0; }
+.nz-img > span { position: absolute; inset: 0; display: grid; place-items: center; }
+.nz-img .ico { width: 42px; height: 42px; }
+@media (hover: hover) { .nz-card:hover .nz-img > img { transform: scale(1.04); } .nz-card:hover .nz-img > img.alt { opacity: 1; } }
+.nz-tag, .nz-sold { position: absolute; font-style: normal; font-weight: 800; font-size: .72rem; padding: 4px 9px; letter-spacing: .02em; }
+.nz-tag { top: 10px; left: 10px; background: var(--nz-fill); color: #fff; }
+.nz-sold { left: 10px; bottom: 10px; background: var(--nz-deep); color: #fff; }
+.storefront.sf-clothing .nz-card .heart { position: absolute; top: 8px; right: 8px; z-index: 2; width: 34px; height: 34px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: color-mix(in srgb, var(--nz-paper) 92%, transparent); color: var(--nz-ink); font-size: 1.05rem; cursor: pointer; opacity: 1; transform: none; box-shadow: none; }
+.storefront.sf-clothing .nz-card .heart.on { color: #e11d48; background: #fff; }
+.nz-info { padding: 12px 2px 0; }
+.nz-info a { color: var(--nz-ink); text-decoration: none; }
+.nz-info h3 { margin: 0; font: 600 .95rem/1.35 var(--nz-head); letter-spacing: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.nz-price { margin-top: 4px; font-size: .98rem; }
+.nz-price b { font-weight: 700; }
+.nz-price:has(s) b { color: var(--nz-accent); }
+.nz-price s { margin-left: 8px; color: var(--nz-muted); font-weight: 400; font-size: .86rem; }
+.nz-dots { display: flex; gap: 5px; margin-top: 8px; }
+.nz-dots i { width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1080px) {
+  .nz-nav, .nz-search { display: none; }
+  .nz-find, .nz-burger { display: inline-grid; }
+  .nz-actions { margin-left: auto; }
+  .nz-head .sf-actions .btn { display: none; }
+  .nz-searchm.on, .nz-menu.on { display: block; }
+  .nz-grid, .storefront.sf-clothing .fa-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .nz-perks { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .nz-perks-go { display: none; }
+  .nz-cats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+  .nz-head { top: -34px; }
+  .nz-ann { height: 34px; font-size: .74rem; }
+  .nz-ann .container { gap: 10px; }
+  .nz-ann-r a { display: none; }
+  .nz-bar-in { height: 64px; }
+  .nz-bag { width: 30px; height: 34px; }
+  .nz-head .sf-actions a[aria-label="Wishlist"] { display: none; }
+  .nz-cta .nz-btn.ghost { display: none; }
+  .nz-btn { padding: 11px 16px; font-size: .92rem; }
+  .nz-perks > :is(div, a) { flex-direction: column; gap: 8px; padding: 16px 6px; text-align: center; }
+  .nz-perks .ico { width: 32px; height: 32px; }
+  .nz-perks span { font-size: .78rem; }
+  .nz-perks small { display: none; }
+  .nz-cats { gap: 10px; }
+  .nz-cat-name { font-size: .84rem; padding-left: 10px; }
+  .nz-cat > .ico { margin-right: 8px; }
+  .nz-grid, .storefront.sf-clothing .fa-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 10px; }
+  .nz-info h3 { font-size: .86rem; }
+  .nz-price { font-size: .9rem; }
+  .nz-h { align-items: center; }
+}
+@media (max-width: 440px) { .nz-ann .ico { display: none; } }
+@media (min-width: 1081px) { .nz-copy::after { content: ""; position: absolute; left: -6px; bottom: -34px; width: 70px; height: 52px; background: radial-gradient(circle, var(--nz-ink) 2.4px, transparent 3px) 0 0 / 18px 18px; opacity: .8; pointer-events: none; } }
+@media (prefers-reduced-motion: reduce) { .nz-m.fade img, .nz-mosaic.sk .none { animation: none; } .nz-img > img, .nz-cat-img img { transition: none; } }
+
+/* ---------- product page: same palette, readable in light and dark ---------- */
+.storefront.sf-clothing :is(.nz-wrap, .pd-desc, .pre, .review p, .fa-pd-info h1) { overflow-wrap: anywhere; word-break: break-word; min-width: 0; }
+.storefront.sf-clothing .fa-pd-info { background: var(--nz-paper); border: 1px solid var(--nz-line); border-radius: 10px; box-shadow: none; color: var(--nz-ink); }
+.storefront.sf-clothing .fa-pd-info h1 { color: var(--nz-ink); font-family: var(--nz-head); font-weight: 800; }
+.storefront.sf-clothing .fa-pd-info .pd-short, .storefront.sf-clothing .rate-row { color: var(--nz-muted); }
+.storefront.sf-clothing .rate-row b { color: var(--nz-ink); }
+.storefront.sf-clothing .price, .storefront.sf-clothing .fa-pd-info .price.lg { color: var(--nz-accent); }
+.storefront.sf-clothing .price s, .storefront.sf-clothing .fa-pd-info .price.lg s { color: var(--nz-muted); }
+.storefront.sf-clothing .fa-pd-info .price.lg { border-bottom-color: var(--nz-line); }
+.storefront.sf-clothing :is(.cat-pill, .off-chip, .avail) { background: var(--nz-chip); color: var(--nz-accent); border-color: var(--nz-line); }
+.storefront.sf-clothing .avail { color: var(--nz-ink); }
+.storefront.sf-clothing .cfg-sec legend, .storefront.sf-clothing .crumbs b { color: var(--nz-ink); }
+.storefront.sf-clothing .cfg-sec legend small, .storefront.sf-clothing .fa-pd-info .cfg-sec legend .linkish { color: var(--nz-accent); }
+.storefront.sf-clothing .sz { background: var(--nz-paper); color: var(--nz-ink); border-color: var(--nz-line); }
+.storefront.sf-clothing .sz:hover:not(:disabled) { border-color: var(--nz-ink); }
+.storefront.sf-clothing .sz.on { background: var(--nz-btn); border-color: var(--nz-btn); color: var(--nz-btn-fg); box-shadow: none; }
+.storefront.sf-clothing .fa-pd-info .sz:disabled { background: var(--nz-chip); color: var(--nz-muted); }
+.storefront.sf-clothing .fa-pd-info .sw.on { border-color: var(--nz-ink); }
+.storefront.sf-clothing .qtyb { background: var(--nz-paper); border-color: var(--nz-line); color: var(--nz-ink); }
+.storefront.sf-clothing .qtyb button { color: var(--nz-ink); }
+.storefront.sf-clothing .qtyb button:hover { background: var(--nz-chip); }
+.storefront.sf-clothing .fa-pd-info .perk-cards > div, .storefront.sf-clothing .fa-pd-info .sold-by { background: var(--nz-chip); border: 0; color: var(--nz-ink); box-shadow: none; }
+.storefront.sf-clothing .perk-cards b, .storefront.sf-clothing .sold-by b { color: var(--nz-ink); }
+.storefront.sf-clothing .perk-cards small { color: var(--nz-muted); }
+.storefront.sf-clothing .perk-cards .ico, .storefront.sf-clothing .sold-by a { color: var(--nz-accent); }
+.storefront.sf-clothing .pd-tabbar button { background: var(--nz-paper); color: var(--nz-ink); border-color: var(--nz-line); }
+.storefront.sf-clothing .pd-tabbar button.on { background: var(--nz-btn); border-color: var(--nz-btn); color: var(--nz-btn-fg); box-shadow: none; }
+.storefront.sf-clothing .pd-tabs { color: var(--nz-ink); }
+
+/* ---------- footer: always a dark surface with light text, whatever the colour ---------- */
+.storefront.sf-clothing .sf-foot { background: var(--nz-deep); color: rgba(255, 255, 255, .78); }
+.storefront.sf-clothing .sf-foot::before { background: var(--nz-glow); opacity: .6; }
+.storefront.sf-clothing .sf-foot :is(h4, b, .sf-brand, .sf-brand span, .linkbtn) { color: #fff !important; }
+.storefront.sf-clothing .sf-foot-grid :is(a, span:not(.pay-chips span)) { color: rgba(255, 255, 255, .74); }
+.storefront.sf-clothing .sf-foot-grid a:hover { color: #fff; }
+.storefront.sf-clothing .sf-foot .pay-chips span { color: #fff; border-color: rgba(255, 255, 255, .28); background: rgba(255, 255, 255, .06); }
+.storefront.sf-clothing .sf-foot-end { color: rgba(255, 255, 255, .66); border-top-color: rgba(255, 255, 255, .16); }
+@media (min-width: 761px) { .storefront.sf-clothing .sf-foot-end { padding-left: 68px; } } /* keeps the round cookie button off the copyright line */
+
+/* ---------- animated background: tiny clothes drifting upward ---------- */
+.nz-bd { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.nz-bd { --k: 1; }
+.nz-bd i { width: calc(var(--s) * 2.6px * var(--k)); height: calc(var(--s) * 2.6px * var(--k)); position: absolute; top: var(--y); display: block; color: var(--nz-accent); opacity: .18; will-change: transform; }
+.nz-bd i.b { color: var(--nz-sec); opacity: .14; }
+.nz-bd svg { width: 100%; height: 100%; display: block; transform: rotate(var(--r)); }
+.dark .nz-bd i { opacity: .2; }
+.sf-motion .nz-bd i { top: 100%; animation: nzdrift var(--d) linear var(--l) infinite; }
+.sf-motion .nz-bd svg { animation: nzspin calc(var(--d) * .6) ease-in-out var(--l) infinite alternate; }
+@keyframes nzdrift { 0% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(var(--sw), -58vh, 0); } 100% { transform: translate3d(0, -118vh, 0); } }
+@keyframes nzspin { from { transform: rotate(var(--r)); } to { transform: rotate(calc(var(--r) + 60deg)); } }
+@media (max-width: 700px) { .nz-bd { --k: .72; } .nz-bd i:nth-child(n + 11) { display: none; } .nz-bd i { opacity: .13; } }
+@media (prefers-reduced-motion: reduce) { .sf-motion .nz-bd i { top: var(--y); animation: none; } .sf-motion .nz-bd svg { animation: none; } }
+
+/* ---------- more polish: deal rail, tags, rating, show more, help banner ---------- */
+.nz-pager button.on { width: 28px; border-radius: 99px; transform: none; background: var(--nz-chip2); overflow: hidden; }
+.nz-pager button.on::after { content: ""; position: absolute; inset: 0; background: var(--nz-fill); transform-origin: left; animation: nzprog 6s linear both; }
+.nz-hero.hold .nz-pager button.on::after { animation-play-state: paused; }
+@keyframes nzprog { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.nz-arrow { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid var(--nz-line); border-radius: 50%; background: var(--nz-paper); color: var(--nz-ink); cursor: pointer; transition: background .2s, color .2s; }
+.nz-arrow:hover { background: var(--nz-btn); color: var(--nz-btn-fg); border-color: var(--nz-btn); }
+.nz-arrow:first-child .ico { transform: rotate(0); }
+.nz-arrow .ico { width: 20px; height: 20px; }
+.nz-rail { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px; scrollbar-width: none; overscroll-behavior-x: contain; }
+.nz-rail::-webkit-scrollbar { display: none; }
+.nz-rail .nz-card { flex: 0 0 clamp(158px, 22vw, 250px); scroll-snap-align: start; }
+.nz-tag.new { background: var(--nz-deep); }
+.nz-rate { display: flex; align-items: center; gap: 4px; margin-top: 4px; font-size: .8rem; font-weight: 700; color: var(--nz-ink); }
+.nz-rate .ico { width: 14px; height: 14px; fill: #f5a623; stroke: #f5a623; }
+.nz-rate small { font-weight: 500; color: var(--nz-muted); }
+.nz-low { margin-top: 4px; font-size: .78rem; font-weight: 700; color: var(--nz-accent); }
+.nz-filter button.sale { display: inline-flex; align-items: center; gap: 6px; }
+.nz-filter button.sale .ico { width: 15px; height: 15px; }
+.nz-more { display: flex; justify-content: center; margin-top: 30px; }
+.nz-more small { font-weight: 500; opacity: .75; }
+.nz-last { padding-bottom: clamp(36px, 6vw, 72px); }
+.nz-help { display: flex; align-items: center; justify-content: space-between; gap: 22px 40px; flex-wrap: wrap; padding: clamp(24px, 4vw, 44px); background: var(--nz-sec); color: #fff; position: relative; overflow: hidden; }
+.nz-help::after { content: ""; position: absolute; right: -50px; top: -60px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255, 255, 255, .08); pointer-events: none; }
+.nz-help h2 { margin: 0 0 6px; font: 800 clamp(1.4rem, 3vw, 2rem)/1.15 var(--nz-head); color: #fff; }
+.nz-help p { margin: 0; max-width: 46ch; color: rgba(255, 255, 255, .86); }
+.nz-help-cta { position: relative; z-index: 1; display: flex; gap: 12px; flex-wrap: wrap; }
+.nz-btn.light { background: #fff; border-color: #fff; color: #13181f; }
+.nz-btn.light:hover { background: transparent; color: #fff; border-color: #fff; }
+.nz-btn.outline { background: transparent; border-color: rgba(255, 255, 255, .7); color: #fff; }
+.nz-btn.outline:hover { background: #fff; color: #13181f; }
+@media (max-width: 700px) { .nz-rail { gap: 10px; } .nz-help-cta .nz-btn { flex: 1; justify-content: center; } .nz-tools .nz-arrow { display: none; } }
+@media (prefers-reduced-motion: reduce) { .nz-pager button.on::after { animation: none; } }
+
+/* brand name: never cut short on desktop; the search box and nav give way instead */
+.nz-brand { flex: none; }
+.nz-brand span { max-width: none; overflow: visible; text-overflow: clip; }
+.nz-search { min-width: 140px; }
+.nz-eyebrow span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 1080px) { .nz-brand { flex: 0 1 auto; min-width: 0; } .nz-brand span { overflow: hidden; text-overflow: ellipsis; max-width: 60vw; } }

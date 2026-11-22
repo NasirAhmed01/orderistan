@@ -1,0 +1,118 @@
+/* styles-v11.css - mobile/laptop alignment fixes. Imported LAST (after styles-fit.css) so it wins.
+   1. Landing hero (mobile)           - text left, girl right, face never covered, matches the UI reference
+   2. "Browse Orderistan" banner      - girl always fully visible on mobile (no face crop)
+   3. "Want to start your own store?" - art no longer overlaps text/button
+   4. Product page (food + fashion)   - Add to cart / Buy now always visible: sticky on laptop, fixed bottom bar on mobile */
+
+/* ================= 1. LANDING HERO - MOBILE ================= */
+@media(max-width:700px){
+  .landing .hero.hero-photo{display:block;position:relative;overflow:hidden;min-height:0;
+    background:linear-gradient(180deg,#f4f9ff 0%,#dcecff 52%,#a9d0fa 100%)}
+  .landing .hero.hero-photo::before{display:none}
+  /* the girl: whole image (2:3) sits bottom-right; width is capped so she is never cropped */
+  .landing .hero.hero-photo::after{content:"";position:absolute;right:0;bottom:0;left:auto;top:auto;
+    width:min(88vw,420px);height:auto;aspect-ratio:1024/1535;
+    background:url(/hero-girl.webp) right bottom/100% 100% no-repeat;pointer-events:none;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%),linear-gradient(90deg,transparent 0,#000 34%);
+    -webkit-mask-composite:source-in;
+    mask-image:linear-gradient(180deg,transparent 0,#000 16%),linear-gradient(90deg,transparent 0,#000 34%);
+    mask-composite:intersect}
+  .landing .hero.hero-photo .hero-wrap{position:relative;z-index:2;display:block;padding:16px 16px 0;
+    min-height:max(138vw,560px);box-sizing:border-box}
+  .landing .hero-photo .hero-copy{width:100%;max-width:none}
+  .landing .hero-photo .hero-pill{max-width:min(56vw,250px)}
+  .landing .hero-photo h1{max-width:min(54vw,260px);font-size:clamp(1.5rem,7.2vw,2.1rem)}
+  .landing .hero-photo p{max-width:min(48vw,230px)}
+  .landing .hero-photo .row{display:flex;flex-direction:column;align-items:stretch;gap:10px;width:min(48vw,230px)}
+  .landing .hero-photo .row .btn.lg{flex:none;width:100%;height:auto;min-height:0;justify-content:center;white-space:nowrap}
+  .landing .hero-photo .hero-link{display:none}
+  /* trust card (reference: icon left, text right, 3 items) */
+  .landing .m-after{margin-top:-16vw}
+  .landing .m-trust{grid-template-columns:repeat(3,minmax(0,1fr));padding:12px 4px}
+  .landing .m-trust li{flex-direction:row;text-align:left;gap:6px;padding:2px 8px;font-size:.64rem;line-height:1.2}
+  .landing .m-trust .ico{flex:none;width:22px;height:22px}
+}
+@media(max-width:360px){
+  .landing .hero-photo h1{font-size:1.4rem}
+  .landing .m-trust li{font-size:.58rem;padding:2px 5px;gap:4px}
+}
+
+/* ================= 2. BROWSE ORDERISTAN - MOBILE ================= */
+@media(max-width:700px){
+  .landing .market-hero{display:flex;flex-direction:column;justify-content:center;border-radius:22px;
+    min-height:clamp(250px,70vw,320px);padding:20px 16px;
+    background:linear-gradient(135deg,#f1f8ff 0%,#d5e8ff 60%,#b6d6fb 100%)}
+  /* girl = right side, full height of the card, aspect kept -> face + body always inside the card */
+  .landing .market-hero::before{content:"";position:absolute;top:0;right:0;bottom:0;left:auto;
+    width:auto;height:100%;aspect-ratio:1024/1535;max-width:62%;
+    background:url(/hero-girl.webp) right bottom/auto 100% no-repeat;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%);mask-image:linear-gradient(90deg,transparent 0,#000 30%)}
+  .landing .market-hero>*{z-index:1}
+  .landing .market-hero h1{font-size:clamp(1.9rem,9vw,2.4rem);max-width:58%}
+  .landing .market-hero p{font-size:.88rem;line-height:1.4;max-width:56%;margin:.45em 0 .9em}
+  .landing .market-hero ul{flex-direction:column;flex-wrap:nowrap;gap:7px;max-width:56%}
+  .landing .market-hero li{font-size:.8rem;gap:8px}
+  .landing .market-hero li .ico{width:20px;height:20px;flex:none}
+}
+
+/* ================= 3. "WANT TO START YOUR OWN STORE?" CARD ================= */
+.landing .mk-cta{display:grid;grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:"text art" "btn btn";align-items:start;gap:14px 6px;min-height:0;padding:24px 20px 18px}
+.landing .mk-cta .mk-cta-text{grid-area:text}
+.landing .mk-cta h3{font-size:1.3rem}
+.landing .mk-cta p{max-width:none;margin:0}
+.landing .mk-cta .mk-cta-btn{grid-area:btn;justify-self:start;align-self:center;white-space:nowrap;padding:10px 16px;font-size:.9rem}
+.landing .mk-cta .mk-cta-art{grid-area:art;position:static;width:84px;height:auto;margin:6px -2px 0 0;align-self:start}
+@media(max-width:1100px){
+  .landing .mk-cta{grid-template-areas:"text art" "btn art";align-items:center;padding:20px}
+  .landing .mk-cta .mk-cta-art{width:108px;align-self:center;margin:0}
+}
+@media(max-width:420px){
+  .landing .mk-cta{padding:18px 16px}
+  .landing .mk-cta h3{font-size:1.15rem}
+  .landing .mk-cta .mk-cta-art{width:84px}
+  .landing .mk-cta .mk-cta-btn{padding:9px 13px;font-size:.84rem}
+}
+
+/* ================= 4a. PRODUCT PAGE LAYOUT (tablet + phone) =================
+   styles-fit.css sets a 2-column grid with no media query, which overrode the single-column rule in styles-store.css
+   and squeezed the gallery next to the details on phones. Restore the stacked layout: gallery -> details -> tabs. */
+@media(max-width:900px){
+  .storefront.storefront .fd-pd,.storefront.storefront .fa-pd{grid-template-columns:minmax(0,1fr);gap:18px}
+  .storefront.storefront .pd-left{display:contents}
+  .storefront.storefront .pd-left .gal{order:1}
+  .storefront.storefront .fd-pd>div:last-child,.storefront.storefront .fa-pd-info{order:2}
+  .storefront.storefront .pd-left .pd-tabs{order:3}
+  .storefront.storefront .pd-left .cr-track.gal-main{aspect-ratio:4/3}
+  .storefront.storefront .fd-detail,.storefront.storefront .fa-detail{padding-left:16px;padding-right:16px}
+}
+
+/* The storefront page-enter animation used a transform; a transformed ancestor turns position:fixed into "fixed to that box"
+   (the bar ended up at the bottom of the page instead of the screen). Fade only, and never keep the fill afterwards. */
+@keyframes pg-fade{from{opacity:0}to{opacity:1}}
+.storefront .pg-in{animation-name:pg-fade;animation-fill-mode:backwards}
+
+/* ================= 4b. PRODUCT PAGE - BUY BUTTONS ALWAYS VISIBLE ================= */
+/* laptop / tablet: buy buttons are NOT sticky (removed in v12) - they sit inline with the options */
+/* phone: real bottom bar */
+@media(max-width:760px){
+  .storefront.storefront .fd-pd .cfg-buy,.storefront.storefront .fa-pd .cfg-buy{position:fixed;left:0;right:0;bottom:0;z-index:70;margin:0;
+    display:grid;border-radius:0;
+    background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+    border:0;border-top:1px solid var(--brand-line,#e6e6e6);box-shadow:0 -10px 28px rgba(16,24,40,.14)}
+  .storefront.storefront .fd-pd .cfg-buy .btn.grow .ico,.storefront.storefront .fa-pd .cfg-buy .btn.grow .ico{display:none}
+  .storefront.storefront .fd-pd .cfg-buy .buy-now,.storefront.storefront .fa-pd .cfg-buy .buy-now{grid-column:auto;padding-inline:14px;justify-content:center}
+  .storefront .fd-pd .cfg-buy .qtyb,.storefront .fa-pd .cfg-buy .qtyb{align-self:center}
+  /* validation message (e.g. "Please choose a size") floats just above the bar so it is never off-screen */
+  .storefront .fd-pd .cfg>.banner,.storefront .fa-pd .cfg>.banner{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:71;margin:0;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+  /* keep page content, cookie button, back-to-top and toasts clear of the bar */
+  body:has(.fd-pd .cfg-buy,.fa-pd .cfg-buy) main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  body:has(.fd-pd .cfg-buy,.fa-pd .cfg-buy) .ck-fab,
+  body:has(.fd-pd .cfg-buy,.fa-pd .cfg-buy) .to-top,
+  body:has(.fd-pd .cfg-buy,.fa-pd .cfg-buy) .toasts{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+}
+
+/* Browse banner on tablets: a bit more white behind the text so it stays readable over the photo */
+@media(min-width:701px) and (max-width:1100px){
+  .landing .market-hero::before{background:linear-gradient(90deg,rgba(255,255,255,.9) 0%,rgba(255,255,255,.74) 52%,rgba(255,255,255,0) 78%)}
+}
