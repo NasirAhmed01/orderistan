@@ -44,11 +44,14 @@ const apiStub = (env) => {
   return env.API.get(env.API.idFromName("orderistan-api"), opts);
 };
 
-// Cron Triggers (wrangler.jsonc "triggers.crons") -> the existing /api/cron route, selected with ?job=
-const CRON_JOBS = {
-  "*/10 * * * *": "subscriptions,heartbeat", // store expiry + 7/3/1-day warnings, DB health heartbeat
-  "0 * * * *": "cloudinary",                 // Cloudinary usage alerts (70/85/95 %)
-  "0 3 * * *": "chat"                        // 120-day chat prune + data backfill
+// ONE Cron Trigger only (*/10 * * * *): the Free plan allows 5 cron triggers per ACCOUNT in total, so the hourly and daily jobs
+// are derived from the scheduled time instead of using separate triggers.
+const cronJobs = (scheduledTime) => {
+  const d = new Date(scheduledTime || Date.now());
+  const jobs = ["subscriptions", "heartbeat"];            // every 10 min: store expiry + 7/3/1-day warnings, DB health heartbeat
+  if (d.getUTCMinutes() < 10) jobs.push("cloudinary");    // hourly: Cloudinary usage alerts (70/85/95 %)
+  if (d.getUTCHours() === 3 && d.getUTCMinutes() < 10) jobs.push("chat"); // daily 03:00 UTC: 120-day chat prune + data backfill
+  return jobs.join(",");
 };
 
 export default {
@@ -63,7 +66,7 @@ export default {
   },
 
   async scheduled(event, env, ctx) {
-    const job = CRON_JOBS[event.cron] || "all";
+    const job = cronJobs(event.scheduledTime);
     const req = new Request(`https://${env.ROOT_DOMAIN || "orderistan.site"}/api/cron?job=${encodeURIComponent(job)}`, {
       headers: { authorization: `Bearer ${env.CRON_SECRET || ""}`, "x-forwarded-for": "127.0.0.1" }
     });
