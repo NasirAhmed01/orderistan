@@ -20,7 +20,7 @@
 
   // The API lives in one SQLite-backed Durable Object (available on the Free plan). It keeps the MongoDB Atlas connection warm.
   "durable_objects": { "bindings": [{ "name": "API", "class_name": "ApiServer" }] },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ApiServer"] }],
+  "exports": { "ApiServer": { "type": "durable-object", "storage": "sqlite" } },
 
   // Replaces the old Vercel cron + setInterval jobs. Free plan allows 5 Cron Triggers per account (3 used).
   "triggers": { "crons": ["*/10 * * * *", "0 * * * *", "0 3 * * *"] },
