@@ -1,27 +1,11 @@
 {
-  "name": "orderistan-backend",
-  "version": "2.0.0",
+  "name": "orderistan",
   "private": true,
-  "description": "Orderistan API - Express app that runs inside a Cloudflare Durable Object (see worker.mjs). Bundled by wrangler from the repo root.",
-  "main": "worker.mjs",
   "scripts": {
-    "reset-admin": "node scripts/reset-admin.js",
-    "security-check": "node scripts/security-check.js"
+    "install:all": "npm --prefix orderistan-backend install && npm --prefix orderistan-frontend install --include=dev",
+    "build": "npm run install:all && npm --prefix orderistan-frontend run build",
+    "dev": "npm --prefix orderistan-frontend run build && wrangler dev",
+    "deploy": "wrangler deploy"
   },
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
-    "express": "^4.21.2",
-    "express-rate-limit": "^7.5.0",
-    "helmet": "^8.0.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^9.0.0",
-    "multer": "^2.0.2"
-  },
-  "devDependencies": {
-    "dotenv": "^16.4.7"
-  },
-  "overrides": {
-    "iconv-lite": "0.7.3"
-  }
+  "devDependencies": { "wrangler": "^4" }
 }
