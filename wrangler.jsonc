@@ -8,6 +8,8 @@
   "build": { "command": "npm run build" },
   "compatibility_date": "2025-01-01",
   "workers_dev": true,
+  // Variables/secrets are set in the Cloudflare dashboard (Settings > Variables and Secrets). Without this, every deploy would delete them.
+  "keep_vars": true,
   "assets": {
     "directory": "./orderistan-frontend/dist",
     "binding": "ASSETS",
