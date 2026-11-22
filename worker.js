@@ -24,16 +24,21 @@ export class Backend extends Container {
 }
 
 const backend = (env) => getContainer(env.BACKEND, "main");
+const REQUIRED = ["MONGODB_URI", "JWT_SECRET", "CLOUDINARY_URL"];
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const missing = REQUIRED.filter((k) => !env[k]);
+    if (missing.length)
+      return Response.json({ status: "error", message: "Missing variables. Add them in Worker > Settings > Variables and Secrets (not Build variables), then redeploy.", missing }, { status: 500 });
     const headers = new Headers(request.headers);
     // The container only sees the Worker, so pass the real visitor IP/host (rate limits + store sub-domains depend on them).
     headers.set("x-forwarded-for", request.headers.get("cf-connecting-ip") || "");
     headers.set("x-forwarded-host", url.host);
     headers.set("x-forwarded-proto", "https");
-    return backend(env).fetch(new Request(request, { headers }));
+    try { return await backend(env).fetch(new Request(request, { headers })); }
+    catch (e) { return Response.json({ status: "error", message: "Backend container did not start: " + String((e && e.message) || e).slice(0, 300) }, { status: 503 }); }
   },
   async scheduled(_event, env, ctx) {
     ctx.waitUntil(
