@@ -15,7 +15,7 @@ const MB = 1024 * 1024, r2 = (n) => Math.round(n * 100) / 100;
 const STATES = { 0: "disconnected", 1: "connected", 2: "connecting", 3: "disconnecting" };
 // Own tiny collection (not "settings"): older databases have a unique index on settings.key that rejects a second document without a key.
 const sysState = () => mongoose.connection.collection("sysstate");
-const withTimeout = (p, ms = 5000) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), ms).unref())]);
+const withTimeout = (p, ms = 5000) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), ms).unref?.())]);
 // Raw driver errors are logged on the server only. The browser gets a short, safe reason (never a connection string or stack trace).
 const errors = {};
 const reason = (e) => /timeout|timed out|MaxTimeMS/i.test(e?.message || "") || e?.code === 50 ? "Timed out" : (e?.code === 13 || /not authorized|unauthorized/i.test(e?.message || "")) ? "The database user is not permitted to run this check" : "The check failed";

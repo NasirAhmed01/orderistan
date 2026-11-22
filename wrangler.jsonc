@@ -1,33 +1,43 @@
 {
-  // Orderistan on Cloudflare: frontend + backend in ONE Worker (needs Workers Paid plan because of Containers).
-  //   Build command : npm run build
-  //   Deploy command: npx wrangler deploy      (Docker must be available: Workers Builds has it; on your PC start Docker Desktop)
+  // Orderistan on Cloudflare Workers FREE plan: frontend (Static Assets) + API (Express inside a Durable Object) in ONE Worker.
+  // No Containers, no Docker. Deploy:  npx wrangler deploy   (it builds the frontend first, see "build")
   "name": "orderistan",
-  "main": "worker.js",
-  // wrangler builds the frontend itself, so it works even if the dashboard "Build command" is empty:
-  "build": { "command": "npm run build" },
-  "compatibility_date": "2025-01-01",
+  "main": "orderistan-backend/worker.mjs",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat", "enable_nodejs_http_server_modules"],
   "workers_dev": true,
-  // Variables/secrets are set in the Cloudflare dashboard (Settings > Variables and Secrets). Without this, every deploy would delete them.
   "keep_vars": true,
+  "build": { "command": "npm run build" },
+
+  // Static files are served by Cloudflare WITHOUT running the Worker (they do not count against the 100,000 requests/day).
+  // Only /api/* runs the Worker code.
   "assets": {
     "directory": "./orderistan-frontend/dist",
     "binding": "ASSETS",
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"]
   },
-  "containers": [
-    {
-      "class_name": "Backend",
-      "image": "./orderistan-backend/Dockerfile",
-      "image_build_context": "./orderistan-backend",
-      "instance_type": "standard-1",
-      "max_instances": 1
-    }
-  ],
-  "durable_objects": { "bindings": [{ "name": "BACKEND", "class_name": "Backend" }] },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Backend"] }],
-  "triggers": { "crons": ["0 3 * * *"] },
+
+  // The API lives in one SQLite-backed Durable Object (available on the Free plan). It keeps the MongoDB Atlas connection warm.
+  "durable_objects": { "bindings": [{ "name": "API", "class_name": "ApiServer" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ApiServer"] }],
+
+  // Replaces the old Vercel cron + setInterval jobs. Free plan allows 5 Cron Triggers per account (3 used).
+  "triggers": { "crons": ["*/10 * * * *", "0 * * * *", "0 3 * * *"] },
+
+  // Non-secret settings (secrets are set with `wrangler secret put`, see CLOUDFLARE_DEPLOY.md). Edit ROOT_DOMAIN / ALLOWED_ORIGINS here.
+  "vars": {
+    "NODE_ENV": "production",
+    "ROOT_DOMAIN": "orderistan.site",
+    "SUPPORT_EMAIL": "orderistan@gmail.com",
+    "ALLOWED_ORIGINS": "https://orderistan.orderistan.workers.dev",
+    "TRUST_PROXY": "1",
+    "JWT_EXPIRES_IN": "7d",
+    "ADMIN_JWT_EXPIRES_IN": "2h",
+    "TRIAL_DAYS": "0",
+    "BREVO_SENDER_NAME": "Orderistan"
+  },
+
   // Custom domain (after orderistan.site is on this Cloudflare account) - uncomment, deploy again:
   // "routes": [
   //   { "pattern": "orderistan.site", "custom_domain": true },

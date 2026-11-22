@@ -97,13 +97,13 @@ function start() {
     try { if (await tryLock("subscriptions", EVERY - 30 * 1000)) await checkSubscriptions(); }
     catch (e) { console.error("subscription check failed:", e.message); }
   };
-  run(); setInterval(run, EVERY).unref();
+  run(); setInterval(run, EVERY).unref?.();
   const cloud = async () => { try { if (await tryLock("cloudinary", 55 * 60 * 1000)) await checkCloudinary(); } catch (e) { console.error("cloudinary check failed:", e.message); } };
   const prune = async () => { try { if (await tryLock("chatPrune", 23 * 3600 * 1000)) await pruneChat(); } catch (e) { console.error("chat prune failed:", e.message); } };
-  setTimeout(prune, 90000).unref(); setInterval(prune, 24 * 3600 * 1000).unref();
+  setTimeout(prune, 90000).unref?.(); setInterval(prune, 24 * 3600 * 1000).unref?.();
   // health-check heartbeat: a real ping every 5 min, remembered so "last successful health check" is meaningful even when nobody has the dashboard open
   const beat = async () => { try { if (await tryLock("dbHeartbeat", 4.5 * 60 * 1000)) await require("./sysmonitor").probe({ persist: true }); } catch (e) { console.error("db heartbeat failed:", e.message); } };
-  setTimeout(beat, 20000).unref(); setInterval(beat, 5 * 60 * 1000).unref();
-  setTimeout(cloud, 30000).unref(); setInterval(cloud, 60 * 60 * 1000).unref();
+  setTimeout(beat, 20000).unref?.(); setInterval(beat, 5 * 60 * 1000).unref?.();
+  setTimeout(cloud, 30000).unref?.(); setInterval(cloud, 60 * 60 * 1000).unref?.();
 }
 module.exports = { checkSubscriptions, checkCloudinary, pruneChat, backfill, start };

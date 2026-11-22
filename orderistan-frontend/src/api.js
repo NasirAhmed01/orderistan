@@ -18,7 +18,7 @@ let storeSlug = null;
 export const setStoreSlug = (s) => { storeSlug = s; };
 export const getStoreSlug = () => storeSlug;
 
-const api = axios.create({ baseURL: (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "") + "/api" }) // VITE_API_URL = your Vercel backend, set in .env.production;
+const api = axios.create({ baseURL: (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "") + "/api" }) // VITE_API_URL is empty on Cloudflare (API and site are one Worker, same origin);
 api.interceptors.request.use((c) => {
   const t = localStorage.getItem("orderistan_token");
   if (t) c.headers.Authorization = `Bearer ${t}`;

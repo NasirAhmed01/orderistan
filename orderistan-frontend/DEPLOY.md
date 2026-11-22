@@ -1,3 +1,1 @@
-# Deploy
-
-Frontend + backend deploy together from the repo root as ONE Cloudflare Worker named `orderistan`. See ../CLOUDFLARE_DEPLOY.md.
+Frontend is deployed together with the API as ONE Cloudflare Worker. See ../CLOUDFLARE_DEPLOY.md.

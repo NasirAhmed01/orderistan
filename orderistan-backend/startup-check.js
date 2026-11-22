@@ -1,7 +1,7 @@
-// Startup / health diagnostics. Prints a clear report to the console (Vercel > Project > Logs):
+// Startup / health diagnostics. Prints a clear report to the console (Cloudflare > Workers & Pages > orderistan > Logs):
 //   - every env key: OK / MISSING / PLACEHOLDER / INVALID  (values are NEVER printed)
 //   - live checks: MongoDB ping, Cloudinary ping, Brevo API key + verified sender
-// Success lines use console.log, problems use console.error (so Vercel shows them as "Error" level).
+// Success lines use console.log, problems use console.error (so Cloudflare logs show them as "error" level).
 const mongoose = require("mongoose");
 
 const PLACEHOLDER = /PASTE_|your_verified|^<.*>$|put_a_long|replace_this|yourdomain\.com/i;
@@ -49,10 +49,8 @@ async function checkMongo() {
 async function checkCloudinary() {
   if (!has("CLOUDINARY_URL")) return { name: "Cloudinary", ok: false, msg: "CLOUDINARY_URL missing" };
   try {
-    const { v2: cloudinary } = require("cloudinary");
-    cloudinary.config({ secure: true });
-    await withTimeout(cloudinary.api.ping(), 8000, "Cloudinary ping");
-    return { name: "Cloudinary", ok: true, msg: `credentials valid (cloud: ${cloudinary.config().cloud_name})` };
+    const cloud = await withTimeout(require("./cloud").ping(), 9000, "Cloudinary ping");
+    return { name: "Cloudinary", ok: true, msg: `credentials valid (cloud: ${cloud})` };
   } catch (e) {
     const m = e?.error?.message || e?.message || String(e);
     return { name: "Cloudinary", ok: false, msg: m + " - check CLOUDINARY_URL (api_key / secret / cloud_name)" };
@@ -65,7 +63,7 @@ async function checkBrevo() {
   try {
     const H = { "api-key": key, accept: "application/json" };
     const acc = await fetch("https://api.brevo.com/v3/account", { headers: H, signal: AbortSignal.timeout(8000) });
-    if (acc.status === 401 || acc.status === 403) return { name: "Brevo", ok: false, msg: `API key rejected (HTTP ${acc.status}) - key wrong, or Brevo blocks this IP (Security > Authorized IPs: deactivate it for Vercel)` };
+    if (acc.status === 401 || acc.status === 403) return { name: "Brevo", ok: false, msg: `API key rejected (HTTP ${acc.status}) - key wrong, or Brevo blocks this IP (Security > Authorized IPs: deactivate it, Cloudflare has no fixed IP)` };
     if (!acc.ok) return { name: "Brevo", ok: false, msg: `account check failed (HTTP ${acc.status})` };
     if (!sender || PLACEHOLDER.test(sender)) return { name: "Brevo", ok: false, warn: true, msg: "API key OK but BREVO_SENDER_EMAIL is not set" };
     const sres = await fetch("https://api.brevo.com/v3/senders", { headers: H, signal: AbortSignal.timeout(8000) });
@@ -92,7 +90,7 @@ async function runStartupCheck({ live = true, print = true } = {}) {
   if (print) {
     const L = [];
     L.push("================ ORDERISTAN STARTUP CHECK ================");
-    L.push(`node ${process.version} | NODE_ENV=${process.env.NODE_ENV || "-"} | ${process.env.VERCEL ? `Vercel (${process.env.VERCEL_ENV || "?"}, region ${process.env.VERCEL_REGION || "?"})` : "local"}`);
+    L.push(`node ${process.version} | NODE_ENV=${process.env.NODE_ENV || "-"} | Cloudflare Workers`);
     L.push("--- Environment keys ---");
     for (const x of env) L.push(`${x.ok ? "✅" : x.level === "required" ? "❌" : "⚠️ "} ${x.key}: ${x.msg}`);
     if (services.length) {
@@ -102,7 +100,7 @@ async function runStartupCheck({ live = true, print = true } = {}) {
     L.push("----------------------------------------------------------");
     if (ok && !envWarn.length && !svcWarn.length) L.push("✅✅ ALL OK - backend is running and every env key / service is working.");
     else if (ok) L.push(`✅ Backend is RUNNING, but ${envWarn.length + svcWarn.length} warning(s) above (optional features limited).`);
-    else L.push(`❌ BACKEND HAS PROBLEMS: ${envBad.length + svcBad.length} error(s) above. Fix them in Vercel > Settings > Environment Variables, then redeploy.`);
+    else L.push(`❌ BACKEND HAS PROBLEMS: ${envBad.length + svcBad.length} error(s) above. Fix them with "wrangler secret put <NAME>" (or Cloudflare dashboard > Settings > Variables and Secrets), then redeploy.`);
     L.push("==========================================================");
     (ok ? console.log : console.error)(L.join("\n"));
   }

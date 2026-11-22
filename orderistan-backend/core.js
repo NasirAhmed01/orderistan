@@ -1,11 +1,8 @@
-require("dotenv").config();
+// Orderistan API (Express). On Cloudflare it runs inside a Durable Object through node:http (see worker.mjs), so the MongoDB
+// connection, the caches and the in-memory rate limiter stay warm between requests. Secrets come from the Worker environment (process.env).
 const express = require("express");
-const path = require("path");
-const fs = require("fs");
 const cors = require("cors");
 const helmet = require("helmet");
-// Some hosts cannot resolve MongoDB Atlas SRV records with their default DNS. Set DNS_SERVERS=system to use the OS resolver instead.
-if (process.env.DNS_SERVERS !== "system") require("node:dns").setServers((process.env.DNS_SERVERS || "8.8.8.8,1.1.1.1").split(",").map((x) => x.trim()).filter(Boolean));
 const connectDB = require("./config/db");
 const { User } = require("./models");
 const { mainHostOnly, sanitize } = require("./guards");
@@ -15,8 +12,6 @@ const U = require("./utils");
 const jobs = require("./jobs");
 const plans = require("./plans");
 const { runStartupCheck, checkEnv } = require("./startup-check");
-
-let compression = null; try { compression = require("compression"); } catch { console.warn("Tip: run `npm install` to enable gzip compression (package: compression), or enable gzip/brotli in nginx/Cloudflare."); }
 
 const isProd = process.env.NODE_ENV === "production";
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32 || /put_a_long|replace_this/i.test(process.env.JWT_SECRET)) {
@@ -28,11 +23,11 @@ if (!require("./mailer").configured())
 
 const app = express();
 app.disable("x-powered-by");
-// 1 = nginx only. 2 = Cloudflare -> nginx -> node. A wrong value gives wrong IPs in logs and rate limits (all users look like ONE IP).
+// worker.mjs overwrites X-Forwarded-For with the real client IP (CF-Connecting-IP), so 1 hop is right on Cloudflare.
 const tp = process.env.TRUST_PROXY;
 const trust = tp === undefined || tp === "" ? 1 : (isNaN(tp) ? tp : Number(tp));
 app.set("trust proxy", trust);
-if (compression) app.use(compression());
+// gzip/brotli is applied by Cloudflare automatically.
 app.use(helmet({
   contentSecurityPolicy: {
     useDefaults: false,
@@ -63,7 +58,7 @@ app.use(cors({
   }
 }));
 // Diagnostic health check: runs BEFORE the DB middleware and reports what is wrong (no secrets are printed).
-// Open https://<project>.vercel.app/api/health -> full env + MongoDB + Cloudinary + Brevo report (also printed in the Vercel logs).
+// Open https://<your-worker>/api/health -> full env + MongoDB + Cloudinary + Brevo report.
 app.get("/api/health", async (_req, res) => {
   try { await init(); }
   catch (e) {
@@ -74,18 +69,20 @@ app.get("/api/health", async (_req, res) => {
   const r = await runStartupCheck({ live: true, print: true }).catch((e) => ({ ok: false, error: e.message }));
   res.status(r.ok ? 200 : 500).json({ status: r.ok ? "ok" : "error", service: "Orderistan API", db: "connected", ...r, allowedOrigins: extraOrigins });
 });
-// Vercel Cron (see vercel.json). Vercel sends CRON_SECRET as a Bearer token. Replaces the old setInterval background jobs.
+// Cloudflare Cron Triggers (see wrangler.jsonc) call this route through the Worker's scheduled() handler with CRON_SECRET as Bearer token.
+// ?job= picks which jobs run: subscriptions, heartbeat, cloudinary, chat (comma separated) or "all" (default).
 app.get("/api/cron", async (req, res) => {
   const secret = process.env.CRON_SECRET;
   if (!secret || req.headers.authorization !== `Bearer ${secret}`) return res.status(401).json({ message: "Unauthorized." });
+  const want = String(req.query.job || "all").split(",").map((x) => x.trim());
+  const run = (n) => want.includes("all") || want.includes(n);
   try {
     await init();
     const out = {};
-    out.subscriptions = await jobs.checkSubscriptions();
-    out.cloudinary = await jobs.checkCloudinary().catch((e) => ({ error: e.message }));
-    out.chat = await jobs.pruneChat().catch((e) => ({ error: e.message }));
-    await jobs.backfill().catch((e) => { out.backfill = e.message; });
-    await require("./sysmonitor").probe({ persist: true }).catch(() => {});
+    if (run("subscriptions")) out.subscriptions = await jobs.checkSubscriptions();
+    if (run("cloudinary")) out.cloudinary = await jobs.checkCloudinary().catch((e) => ({ error: e.message }));
+    if (run("chat")) { out.chat = await jobs.pruneChat().catch((e) => ({ error: e.message })); await jobs.backfill().catch((e) => { out.backfill = e.message; }); }
+    if (run("heartbeat")) await require("./sysmonitor").probe({ persist: true }).catch(() => {});
     console.log("✅ cron finished", JSON.stringify(out));
     res.json({ ok: true, ...out });
   } catch (e) { console.error("❌ cron failed:", e); res.status(500).json({ ok: false, message: e.message }); }
@@ -132,27 +129,23 @@ async function seedAdmin() {
 }
 
 
-// ---- serverless bootstrap: connect once per warm instance, reuse on every request ----
-let ready = null, reported = false;
+// ---- bootstrap: connect once per Durable Object instance, reuse on every request ----
+let ready = null;
 function init() {
-  if (!ready) ready = connectDB().then(seedAdmin).then(() => plans.seed()).then(() => { report(); }).catch((e) => {
+  if (!ready) ready = connectDB().then(seedAdmin).then(() => plans.seed()).catch((e) => {
     ready = null;
     console.error("❌ Startup FAILED:", e.message);
-    if (/MONGODB_URI/.test(e.message)) console.error("   -> MONGODB_URI is missing in Vercel Environment Variables.");
-    else if (/ENOTFOUND|querySrv|ECONNREFUSED|ETIMEDOUT|ServerSelection|whitelist|IP/i.test(e.message)) console.error("   -> Cannot reach MongoDB. Atlas > Network Access: allow 0.0.0.0/0, and check the username/password in MONGODB_URI.");
+    if (/MONGODB_URI/.test(e.message)) console.error("   -> MONGODB_URI secret is missing: run `npx wrangler secret put MONGODB_URI`.");
+    else if (/ENOTFOUND|querySrv|ECONNREFUSED|ETIMEDOUT|ServerSelection|whitelist|IP/i.test(e.message)) console.error("   -> Cannot reach MongoDB. Atlas > Network Access: allow 0.0.0.0/0, check the username/password, and if mongodb+srv:// fails use the standard mongodb://host1,host2,host3 string.");
     else if (/auth/i.test(e.message)) console.error("   -> MongoDB authentication failed: wrong user/password in MONGODB_URI.");
     throw e;
   });
   return ready;
 }
-// Prints the full ✅/❌ report once per cold start (kept alive with waitUntil so Vercel does not freeze it mid-way).
-function report() {
-  if (reported) return; reported = true;
-  const p = runStartupCheck({ live: true, print: true }).catch((e) => console.error("❌ Startup check crashed:", e.message));
-  try { require("@vercel/functions").waitUntil(p); } catch {}
-}
-process.on("unhandledRejection", (e) => console.error("❌ Unhandled promise rejection:", e && e.stack || e));
-process.on("uncaughtException", (e) => console.error("❌ Uncaught exception:", e && e.stack || e));
+try {
+  process.on("unhandledRejection", (e) => console.error("❌ Unhandled promise rejection:", e && e.stack || e));
+  process.on("uncaughtException", (e) => console.error("❌ Uncaught exception:", e && e.stack || e));
+} catch { /* process events are not available on every runtime */ }
 // export the Express app itself (a function) and attach helpers, so it works even if a platform treats this file as the entry point
 app.init = init; app.trust = trust; app.app = app;
 module.exports = app;

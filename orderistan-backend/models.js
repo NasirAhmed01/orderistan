@@ -123,7 +123,7 @@ const productSchema = new Schema({
   packages: { type: [new Schema({ name: String, price: Number, duration: Number, description: String, enabled: { type: Boolean, default: true } }, { _id: false })], default: [] },
   ratingAvg: { type: Number, default: 0 }, ratingCount: { type: Number, default: 0 }, sold: { type: Number, default: 0 }
 }, T);
-productSchema.pre("save", function (next) { if (this.isNew || this.isModified("name")) this.keywords = keywordsOf(this.name); next(); });
+productSchema.pre("save", function () { if (this.isNew || this.isModified("name")) this.keywords = keywordsOf(this.name); });
 // per-store pages (storefront + seller dashboard)
 productSchema.index({ store: 1, active: 1, createdAt: -1 });
 productSchema.index({ store: 1, active: 1, category: 1 });

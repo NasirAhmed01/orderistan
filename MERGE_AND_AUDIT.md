@@ -38,3 +38,6 @@ HIGH / MEDIUM
 9. ROOT_DOMAIN: backend .env.example still says yourdomain.com (placeholder) - set orderistan.site (or your real domain). Frontend .env.production is set to orderistan.site; change it if you stay on workers.dev only.
 GOOD (already fine)
 - JWT pinned to HS256, token version revocation, account lockout with escalating time, per-IP and per-email rate limits (Mongo-backed, cluster safe), $operator sanitising, helmet, 200kb JSON limit, upload size/count limits, admin TOTP 2FA, weak-admin-password refusal, CORS allow-list, CSP + HSTS + nosniff + frame-ancestors + Permissions-Policy on the frontend, no inline scripts.
+
+
+> Update (Nov 2026): the backend no longer runs on Vercel. See CLOUDFLARE_DEPLOY.md and TESTING_REPORT.md.

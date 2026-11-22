@@ -1,8 +1,5 @@
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
-const fs = require("fs");
-const os = require("os");
-const path = require("path");
 const crypto = require("crypto");
 const { User, Store } = require("./models");
 const cache = require("./cache");
@@ -82,43 +79,30 @@ const liveOnly = (req, res, next) =>
   req.store.isLive() ? next() : res.status(403).json({ closed: true, message: "This store is currently unavailable." });
 
 // ---- uploads --------------------------------------------------------------------------------------------------------------
-// Files go to a private temp folder on disk (NOT into RAM: 40 sellers x 25 MB used to be 1 GB of memory), are streamed to
-// Cloudinary by the route and are deleted as soon as the response is finished.
-const UPLOAD_DIR = path.join(os.tmpdir(), "orderistan-uploads");
-fs.mkdirSync(UPLOAD_DIR, { recursive: true, mode: 0o700 });
-function sweepUploads() { // remove leftovers of crashed requests (older than 1 hour)
-  fs.readdir(UPLOAD_DIR, (e, names) => {
-    if (e) return;
-    for (const n of names) { const p = path.join(UPLOAD_DIR, n); fs.stat(p, (er, st) => { if (!er && Date.now() - st.mtimeMs > 3600e3) fs.unlink(p, () => {}); }); }
-  });
-}
-sweepUploads();
-
-const storage = multer.diskStorage({
-  destination: (_req, _f, cb) => cb(null, UPLOAD_DIR),
-  filename: (_req, _f, cb) => cb(null, crypto.randomBytes(16).toString("hex"))   // never use the client's file name
-});
+// Cloudflare Workers has no disk, so multipart files are kept in memory (multer memoryStorage) and sent to Cloudinary by the route.
+// Memory is limited (128 MB per isolate), so the TOTAL size of one upload request is capped before multer even starts reading.
+const storage = multer.memoryStorage();
 const imgOnly = (req, f, cb) => /^image\/(jpeg|png|webp|gif)$/.test(f.mimetype) ? cb(null, true) : cb(Object.assign(new Error("Only JPG, PNG, WEBP or GIF images are allowed."), { status: 400 }));
 const vidOnly = (req, f, cb) => /^video\/(mp4|quicktime|webm)$/.test(f.mimetype) ? cb(null, true) : cb(Object.assign(new Error("Only MP4, MOV or WEBM videos are allowed."), { status: 400 }));
-const rawUpload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024, files: 24, fields: 60, parts: 90 }, fileFilter: imgOnly });
-const rawVideo = multer({ storage, limits: { fileSize: 50 * 1024 * 1024, files: 1, fields: 20, parts: 30 }, fileFilter: vidOnly });
+const MB = 1024 * 1024;
+const IMG_REQ_MAX = Number(process.env.UPLOAD_IMAGE_REQUEST_MAX_MB || 30) * MB;   // all photos of one request together
+const VID_REQ_MAX = Number(process.env.UPLOAD_VIDEO_MAX_MB || 25) * MB;           // one video
+const rawUpload = multer({ storage, limits: { fileSize: 5 * MB, files: 24, fields: 60, parts: 90 }, fileFilter: imgOnly });
+const rawVideo = multer({ storage, limits: { fileSize: VID_REQ_MAX, files: 1, fields: 20, parts: 30 }, fileFilter: vidOnly });
 
-// Deletes the temp files once the response has been sent (or the connection dropped).
-function withCleanup(mw) {
-  return (req, res, next) => {
-    res.on("close", () => {
-      const f = [].concat(req.file || [], Array.isArray(req.files) ? req.files : Object.values(req.files || {}).flat());
-      for (const x of f) if (x?.path) fs.unlink(x.path, () => {});
-    });
-    mw(req, res, next);
-  };
-}
-const wrapMulter = (m) => ({
-  single: (n) => withCleanup(m.single(n)),
-  array: (n, c) => withCleanup(m.array(n, c)),
-  fields: (f) => withCleanup(m.fields(f))
+// Rejects oversized multipart requests from the Content-Length header (a chunked upload without a length is refused too).
+const capBody = (max) => (req, res, next) => {
+  const len = Number(req.headers["content-length"]);
+  if (!Number.isFinite(len)) return res.status(411).json({ message: "Upload size is required." });
+  if (len > max + 512 * 1024) return res.status(413).json({ message: `Upload is too large (max ${Math.round(max / MB)} MB in total).` });
+  next();
+};
+const wrapMulter = (m, max) => ({
+  single: (n) => [capBody(max), m.single(n)],
+  array: (n, c) => [capBody(max), m.array(n, c)],
+  fields: (f) => [capBody(max), m.fields(f)]
 });
-const upload = wrapMulter(rawUpload);
-const uploadVideo = wrapMulter(rawVideo);
+const upload = wrapMulter(rawUpload, IMG_REQ_MAX);
+const uploadVideo = wrapMulter(rawVideo, VID_REQ_MAX);
 
 module.exports = { wrap, protect, allowRoles, tenantHost, mainHostOnly, sanitize, slugFromReq, tenant, liveOnly, upload, uploadVideo };
