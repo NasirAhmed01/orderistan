@@ -22,8 +22,8 @@
   "durable_objects": { "bindings": [{ "name": "API", "class_name": "ApiServer" }] },
   "exports": { "ApiServer": { "type": "durable-object", "storage": "sqlite" } },
 
-  // Replaces the old Vercel cron + setInterval jobs. Free plan allows 5 Cron Triggers per account (3 used).
-  "triggers": { "crons": ["*/10 * * * *", "0 * * * *", "0 3 * * *"] },
+  // Replaces the old Vercel cron + setInterval jobs. Free plan allows 5 Cron Triggers per ACCOUNT in total, so only 1 is used (hourly/daily jobs are derived in worker.mjs).
+  "triggers": { "crons": ["*/10 * * * *"] },
 
   // Non-secret settings (secrets are set with `wrangler secret put`, see CLOUDFLARE_DEPLOY.md). Edit ROOT_DOMAIN / ALLOWED_ORIGINS here.
   "vars": {
