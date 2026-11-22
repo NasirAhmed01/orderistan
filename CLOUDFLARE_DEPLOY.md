@@ -10,7 +10,8 @@ Same origin => no CORS setup, `VITE_API_URL` stays empty. MongoDB Atlas, Cloudin
 - Workers **Paid** plan ($5/month) - Containers are not available on Free.
 - Atlas > Network Access: allow 0.0.0.0/0 (Container IPs are not fixed).
 
-## 1. Secrets (Workers & Pages > orderistan > Settings > Variables and Secrets)
+## 1. Runtime variables (Workers & Pages > orderistan > Settings > **Variables and Secrets**, NOT "Build variables")
+Build variables only exist during the build; the backend reads the ones in Variables and Secrets.
 Add as **Secret**: MONGODB_URI, JWT_SECRET (32+ chars), CLOUDINARY_URL, BREVO_API_KEY, CRON_SECRET, ADMIN_PASSWORD
 Add as **Text**: ROOT_DOMAIN (orderistan.site), SUPPORT_EMAIL, BREVO_SENDER_EMAIL, BREVO_SENDER_NAME, ADMIN_EMAIL, ADMIN_NAME, TRIAL_DAYS, JWT_EXPIRES_IN, ADMIN_JWT_EXPIRES_IN (optional: BCRYPT_COST, DB_CAPACITY_MB, STATS_TIMEZONE, STORE_TZ_HOURS)
 Do NOT set ALLOWED_ORIGINS / TRUST_PROXY (not needed here). Secrets set in the dashboard survive deploys.
